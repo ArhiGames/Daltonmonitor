@@ -1,0 +1,109 @@
+:root {
+    --accent-color: #004C93;
+    --highlight-color: #1A80C8;
+    --tag-color: #4ca9f4;
+    
+    --default-padding: .5rem;
+    --border-radius: .75rem;
+    
+    --border: solid #3795df .1rem;
+    
+    --text-color: hsl(0, 0%, 5%);
+    --text-color-warning: #c1121f;
+
+    --shadow-major: 0 8px 8px 0 rgba(0,0,0,.2);
+    --shadow-minor: 0 4px 4px 0 rgba(0,0,0,.2);
+
+    font-family: Ubuntu, sans-serif;
+    font-weight: bold;
+}
+
+body {
+    background-color: var(--accent-color);
+    color: var(--text-color);
+}
+
+header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    margin-bottom: 1rem;
+
+    img {
+        width: 8rem;
+    }
+
+    h1 {
+        text-align: center;
+    }
+    
+    div.last-update {
+        justify-self: right;
+        padding: var(--default-padding);
+        border-radius: var(--border-radius);
+        background-color: var(--highlight-color);
+        border: var(--border);
+        box-shadow: var(--shadow-major);
+        
+        div {
+            margin: .25rem;
+            text-align: center;
+        }
+    }
+}
+
+main {
+    
+}
+
+.day {
+    margin: 0 auto;
+    width: 85%;
+    
+    padding: var(--default-padding);
+    border-radius: var(--border-radius);
+    background-color: var(--highlight-color);
+    border: var(--border);
+    box-shadow: var(--shadow-major);
+    
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+
+    .period {
+        display: contents;
+        .floor {
+            display: grid;
+            grid-template-columns: subgrid;
+            
+            .lesson {
+                display: flex;
+                gap: .5ch;
+                margin: .125rem 0;
+                align-items: center;
+                
+                text-wrap: wrap;
+            }
+
+            .lesson:has(.relocated-room-number) .room-number {
+                text-decoration: line-through;
+                color: var(--text-color-warning);
+            }
+            .lesson:has(.substitute-shorthand) .teacher-shorthand {
+                text-decoration: line-through;
+                color: var(--text-color-warning);
+            }
+            .lesson.removed div {
+                text-decoration: line-through;
+                color: var(--text-color-warning);
+            }
+
+            .lesson .tag {
+                background-color: var(--tag-color);
+                border-radius: var(--border-radius);
+                padding: .25rem;
+                box-shadow: var(--shadow-minor);
+            }
+        }
+    }
+}
