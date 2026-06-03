@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daltonmonitor", "Daltonmonitor\Daltonmonitor.csproj", "{CE0CD981-DE5C-4F22-ABB7-B0E8C77A6196}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daltonmonitor.Desktop", "Daltonmonitor.Desktop\Daltonmonitor.Desktop.csproj", "{A5F241F6-C493-45BA-A55E-CBF53DF605DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE0CD981-DE5C-4F22-ABB7-B0E8C77A6196}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE0CD981-DE5C-4F22-ABB7-B0E8C77A6196}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE0CD981-DE5C-4F22-ABB7-B0E8C77A6196}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE0CD981-DE5C-4F22-ABB7-B0E8C77A6196}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A5F241F6-C493-45BA-A55E-CBF53DF605DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A5F241F6-C493-45BA-A55E-CBF53DF605DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A5F241F6-C493-45BA-A55E-CBF53DF605DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A5F241F6-C493-45BA-A55E-CBF53DF605DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
