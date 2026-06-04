@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using Daltonmonitor.Models.Types;
 using Daltonmonitor.Models.Types.Common.Result;
 
 namespace Daltonmonitor.Models.Timetable;
@@ -19,10 +17,5 @@ public class Timetable
     {
         _timetableLessonDatas.Add(timetableLessonData);
         return Result.Success();
-    }
-
-    public List<TimetableLessonData> GetLessonDataForDay(EDay day)
-    {
-        return TimetableLessonDatas.Where(tld => tld.Day == day).ToList();
     }
 }

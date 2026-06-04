@@ -1,18 +1,36 @@
-﻿using Daltonmonitor.Models.Types;
+﻿using System;
+using System.Collections.Generic;
+using Daltonmonitor.Models.Substitution;
+using Daltonmonitor.Models.Types;
+using Daltonmonitor.Models.Types.Common.Result;
 
 namespace Daltonmonitor.Models.Timetable;
 
-public class TimetableLessonData(int lessonId, DaltonType daltonType, Teacher teacher, Room room, EDay day, int lesson)
+public class TimetableLessonData(int lessonId, DaltonType daltonType, List<Teacher> teachers, List<Room> rooms, DayOfWeek day, int lesson)
 {
     public int LessonId { get; init; } = lessonId;
 
     public DaltonType DaltonType { get; init; } = daltonType;
 
-    public Teacher Teacher { get; init; } = teacher;
+    public List<Teacher> Teachers { get; init; } = teachers;
 
-    public Room Room { get; init; } = room;
+    public List<Room> Rooms { get; init; } = rooms;
 
-    public EDay Day { get; init; } = day;
+    public DayOfWeek Day { get; init; } = day;
 
     public int Lesson { get; init; } = lesson;
+
+    public List<SubstitutionData> SubstitutionData { get; private set; } = [];
+
+    public Result AddTeachers(List<Teacher> teachers)
+    {
+        Teachers.AddRange(teachers);
+        return Result.Success();
+    }
+    
+    public Result AddSubstitutionData(SubstitutionData substitutionData)
+    {
+        SubstitutionData.Add(substitutionData);
+        return Result.Success();
+    }
 }

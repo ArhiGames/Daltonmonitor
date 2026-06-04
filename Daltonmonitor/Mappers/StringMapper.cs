@@ -5,7 +5,7 @@ namespace Daltonmonitor.Mappers;
 
 public static class StringMapper
 {
-    public static List<string> EnhancedSplit(this string value, char separator, bool ignoreWhitespace = true)
+    public static string[] EnhancedSplit(this string value, char separator, bool ignoreWhitespace = true)
     {
         List<string> splits = [];
 
@@ -25,7 +25,8 @@ public static class StringMapper
             }
             stringBuilder.Append(character);
         }
+        splits.Add(stringBuilder.ToString());
 
-        return splits;
+        return splits.ToArray();
     }
 }

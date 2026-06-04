@@ -12,11 +12,20 @@ to set the actual DataContext for runtime, set the DataContext property in code 
         <vm:MainViewModel />
     </Design.DataContext>
 
-    <StackPanel>
-        <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <StackPanel Orientation="Horizontal">
-            <Button Command="{Binding StartApplicationLogic}" Content="Start"/>
-            <Button Command="{Binding StopApplicationLogic}" Content="Stop"/>
-        </StackPanel>
-    </StackPanel>
+    <Grid RowSpacing="20" RowDefinitions="Auto, *, Auto">
+        <Grid Grid.Row="0" Height="50" Margin="0, 20, 0, 0">
+            <TextBlock FontSize="60" Text="Daltonmonitor" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        </Grid>
+        
+        <ContentControl Grid.Row="1" VerticalAlignment="Top">
+            <StackPanel Spacing="20" Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Padding="20, 10, 20, 10" Command="{Binding StartApplicationLogic}" Content="Start"/>
+                <Button Padding="20, 10, 20, 10" Command="{Binding StopApplicationLogic}" Content="Stop"/>
+            </StackPanel>
+        </ContentControl>
+        
+        <Grid Grid.Row="2" Margin="10">
+            <TextBlock Text="v2.0.0r" Foreground="DimGray"/>
+        </Grid>
+    </Grid>
 </UserControl>

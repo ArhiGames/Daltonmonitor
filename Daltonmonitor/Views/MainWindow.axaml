@@ -6,6 +6,7 @@
         xmlns:views="using:Daltonmonitor.Views"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="Daltonmonitor.Views.MainWindow"
+        Width="600" Height="650"
         Icon="/Assets/avalonia-logo.ico"
         Title="Daltonmonitor">
         <views:MainView />

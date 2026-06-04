@@ -6,19 +6,16 @@ namespace Daltonmonitor.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    [ObservableProperty] private string _greeting = "Welcome to Avalonia!";
-
-    public SubstitutionReader SubstitutionReader = new();
+    private readonly SubstitutionReader _substitutionReader = new();
     
     [RelayCommand]
     public void StartApplicationLogic()
     {
-        SubstitutionReader.StartProcess();
+        _substitutionReader.StartProcess();
     }
 
     [RelayCommand]
     public void StopApplicationLogic()
     {
-        Greeting = "Welcome to Avalonia";
     }
 }

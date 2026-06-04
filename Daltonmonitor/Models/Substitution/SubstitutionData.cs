@@ -4,31 +4,20 @@ using Daltonmonitor.Models.Types;
 
 namespace Daltonmonitor.Models.Substitution;
 
-public class SubstitutionData
+public class SubstitutionData(int substitutionId, DateTime date, int lesson, Teacher substituteTeacher, 
+    List<Room> substituteRooms, SubstitutionFlags substitutionFlags, SubstitutionType substitutionType)
 {
-    public required int SubstitutionId { get; init; }
-    
-    public required DateTimeOffset Date { get; init; }
-    
-    public required int Lesson { get; init; }
-    
-    public required Teacher AbsentTeacher { get; init; }
+    public int SubstitutionId { get; init; } = substitutionId;
 
-    public Teacher? SubstituteTeacher { get; init; } = null;
+    public DateTime Date { get; init; } = date;
 
-    public Lesson? LessonData { get; init; } = null;
-    
-    public Lesson? SubstituteLesson { get; init; } = null;
-    
-    public List<Room>? Room { get; init; } = null;
-    
-    public required List<Room> SubstituteRoom { get; init; }
-    
-    public List<Class>? ClassDatas { get; init; } = null;
-    
-    public required SubstitutionFlags SubstitutionFlags { get; init; }
-    
-    public List<Class>? SubstituteClassDatas { get; init; } = null;
+    public int Lesson { get; init; } = lesson;
 
-    public SubstitutionType SubstitutionType { get; init; } = SubstitutionType.None;
+    public Teacher? SubstituteTeacher { get; init; } = substituteTeacher;
+
+    public List<Room>? SubstituteRooms { get; init; } = substituteRooms;
+
+    public SubstitutionFlags SubstitutionFlags { get; init; } = substitutionFlags;
+
+    public SubstitutionType SubstitutionType { get; init; } = substitutionType;
 }
