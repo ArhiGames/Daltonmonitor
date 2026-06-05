@@ -5,31 +5,11 @@ using Daltonmonitor.Models.Timetable;
 
 namespace Daltonmonitor.Application.Generator.Components.User;
 
-public class FloorHtmlComponent : HtmlComponent
+public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, int floor) : HtmlComponent
 {
-    private readonly List<TimetableLessonData> _timetableLessonDatas;
-    private readonly int _floor;
-
-    public FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, int floor)
-    {
-        _timetableLessonDatas = timetableLessonDatas;
-        _floor = floor;
-        
-        BuildChildrenData();
-    }
-
-    private void BuildChildrenData()
-    {
-        foreach (TimetableLessonData timetableLessonData in _timetableLessonDatas)
-        {
-            LessonHtmlComponent lessonHtmlComponent = new(timetableLessonData);
-            AddChildrenToComponent(lessonHtmlComponent);
-        }
-    }
-    
     public override string GenerateHtml()
     {
-        string htmlHead = $"<div class=\"floor\" data-floor-index=\"{_floor}\">";
+        string htmlHead = $"<div class=\"floor\" data-floor-index=\"{floor}\">";
         const string htmlBack = "</div>";
 
         StringBuilder stringBuilder = new();
@@ -40,5 +20,14 @@ public class FloorHtmlComponent : HtmlComponent
         }
         stringBuilder.Append(htmlBack);
         return stringBuilder.ToString();
+    }
+
+    protected override void Initialize()
+    {
+        foreach (TimetableLessonData timetableLessonData in timetableLessonDatas)
+        {
+            LessonHtmlComponent lessonHtmlComponent = new(timetableLessonData);
+            AddChildrenToComponent(lessonHtmlComponent);
+        }
     }
 }

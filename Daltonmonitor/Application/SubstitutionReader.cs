@@ -13,7 +13,6 @@ namespace Daltonmonitor.Application;
 
 public class SubstitutionReader
 {
-
     private Timetable? Timetable { get; set; }
 
     public Result<Timetable> Process()

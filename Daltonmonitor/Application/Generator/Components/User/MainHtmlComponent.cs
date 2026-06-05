@@ -5,25 +5,8 @@ using Daltonmonitor.Models.Timetable;
 
 namespace Daltonmonitor.Application.Generator.Components.User;
 
-public class MainHtmlComponent : HtmlComponent
+public class MainHtmlComponent(Timetable timetable) : HtmlComponent
 {
-    private readonly Timetable _timetable;
-    
-    public MainHtmlComponent(Timetable timetable)
-    {
-        _timetable = timetable;
-        
-        BuildChildrenData();
-    }
-
-    private void BuildChildrenData()
-    {
-        DateTime today = DateTime.UtcNow;
-
-        DayHtmlComponent dayHtmlComponent = new(_timetable, today);
-        AddChildrenToComponent(dayHtmlComponent);
-    }
-    
     public override string GenerateHtml()
     {
         const string htmlHead = "<main>";
@@ -38,5 +21,18 @@ public class MainHtmlComponent : HtmlComponent
         stringBuilder.Append(htmlBack);
 
         return stringBuilder.ToString();
+    }
+
+    protected override void Initialize()
+    {
+        DateTime today = DateTime.UtcNow;
+        DateTime day = new(2026, 5, 29);
+
+        DayHtmlComponent dayHtmlComponent = new(timetable, day);
+        AddChildrenToComponent(dayHtmlComponent);
+
+        DateTime day2 = new(2026, 5, 28);
+        DayHtmlComponent day2HtmlComponent = new(timetable, day2);
+        AddChildrenToComponent(day2HtmlComponent);
     }
 }

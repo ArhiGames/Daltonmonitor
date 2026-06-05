@@ -37,4 +37,6 @@ public class IdentifierHtmlComponent : HtmlComponent
         string htmlElement = $"<div class=\"{htmlClass}\">{_identifier}</div>";
         return htmlElement;
     }
+
+    protected override void Initialize() {}
 }

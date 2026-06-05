@@ -7,24 +7,31 @@ using Daltonmonitor.Models.Types;
 
 namespace Daltonmonitor.Application.Generator.Components.User;
 
-public class PeriodHtmlComponent : HtmlComponent
+public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int lesson) : HtmlComponent
 {
-    private readonly List<TimetableLessonData> _timetableLessonDatas;
-    private readonly int _lesson;
-    
-    public PeriodHtmlComponent(List<TimetableLessonData> timetableLessonDatas, int lesson)
+    public override string GenerateHtml()
     {
-        _timetableLessonDatas = timetableLessonDatas;
-        _lesson = lesson;
-        
-        BuildChildrenData();
+        const string htmlHead = "<div class=\"period\">";
+        string htmlHour = $"<h1>{lesson}. Stunde</h1>";
+        const string htmlBack = "</div>";
+
+        StringBuilder stringBuilder = new();
+        stringBuilder.Append(htmlHead);
+        stringBuilder.Append(htmlHour);
+        foreach (HtmlComponent htmlComponent in Children)
+        {
+            stringBuilder.Append(htmlComponent.GenerateHtml());
+        }
+        stringBuilder.Append(htmlBack);
+
+        return stringBuilder.ToString();
     }
 
-    private void BuildChildrenData()
+    protected override void Initialize()
     {
         /* floor, data*/
-        Dictionary<int, List<TimetableLessonData>> timetableLessonDatas = _timetableLessonDatas
-            .Where(tld => tld.Lesson == _lesson)
+        Dictionary<int, List<TimetableLessonData>> timetableLessonDatas = lessonDatas
+            .Where(tld => tld.Lesson == lesson)
             .GroupBy(tld => GetFloorByRoom(tld.Rooms.Count > 0 ? tld.Rooms[0] : null))
             .OrderBy(group => group.Key)
             .ToDictionary(
@@ -33,11 +40,11 @@ public class PeriodHtmlComponent : HtmlComponent
 
         foreach (KeyValuePair<int, List<TimetableLessonData>> keyValuePair in timetableLessonDatas)
         {
-            FloorHtmlComponent floorHtmlComponent = new(keyValuePair.Value, keyValuePair.Key);
+            FloorHtmlComponent floorHtmlComponent = new(keyValuePair.Value, keyValuePair.Key - 1);
             AddChildrenToComponent(floorHtmlComponent);
         }
     }
-
+    
     private int GetFloorByRoom(Room? room)
     {
         if (room is null)
@@ -59,23 +66,5 @@ public class PeriodHtmlComponent : HtmlComponent
             '8' => 8,
             _ => 1
         };
-    }
-    
-    public override string GenerateHtml()
-    {
-        const string htmlHead = "<div class=\"period\">";
-        string htmlHour = $"<h1>{_lesson}. Stunde</h1>";
-        const string htmlBack = "</div>";
-
-        StringBuilder stringBuilder = new();
-        stringBuilder.Append(htmlHead);
-        stringBuilder.Append(htmlHour);
-        foreach (HtmlComponent htmlComponent in Children)
-        {
-            stringBuilder.Append(htmlComponent.GenerateHtml());
-        }
-        stringBuilder.Append(htmlBack);
-
-        return stringBuilder.ToString();
     }
 }

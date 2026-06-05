@@ -22,7 +22,7 @@ public class Daltonmonitor
         string htmlStructure = HtmlGenerator.GenerateHtmlStructure(timetable);
 
         // todo read output path from config
-        
+       
         File.WriteAllText(file, htmlStructure);
     }
 }

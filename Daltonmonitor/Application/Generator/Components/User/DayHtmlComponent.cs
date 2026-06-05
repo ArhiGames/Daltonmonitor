@@ -7,41 +7,15 @@ using Daltonmonitor.Models.Timetable;
 
 namespace Daltonmonitor.Application.Generator.Components.User;
 
-public class DayHtmlComponent : HtmlComponent
+public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComponent
 {
-    private readonly Timetable _timetable;
-    private readonly DateTime _dateTime;
+    public DateTime DateTime { get; } = dateTime;
 
-    public DayHtmlComponent(Timetable timetable, DateTime dateTime)
-    {
-        _timetable = timetable;
-        _dateTime = dateTime;
-        
-        BuildChildrenData();
-    }
-
-    private void BuildChildrenData()
-    {
-        Dictionary<int, List<TimetableLessonData>> lessonTimetableLessonDatas = _timetable.TimetableLessonDatas
-            .Where(tld => tld.Day == _dateTime.DayOfWeek)
-            .GroupBy(tld => tld.Lesson)
-            .OrderBy(group => group.Key)
-            .ToDictionary(
-                group => group.Key,
-                group => group.ToList());
-
-        foreach (KeyValuePair<int, List<TimetableLessonData>> pair in lessonTimetableLessonDatas)
-        {
-            PeriodHtmlComponent periodHtmlComponent = new(pair.Value, pair.Key);
-            AddChildrenToComponent(periodHtmlComponent);
-        }
-    }
-    
     public override string GenerateHtml()
     {
         const string htmlHead = "<div class=\"day\">";
         
-        string dateTimeString = _dateTime.ToShortDateString();
+        string dateTimeString = DateTime.ToShortDateString();
         string htmlDay = $"<h1 class=\"date\">{dateTimeString}</h1>";
         
         const string htmlBack = "</div>";
@@ -56,5 +30,22 @@ public class DayHtmlComponent : HtmlComponent
         stringBuilder.Append(htmlBack);
 
         return stringBuilder.ToString();
+    }
+
+    protected override void Initialize()
+    {
+        Dictionary<int, List<TimetableLessonData>> lessonTimetableLessonDatas = timetable.TimetableLessonDatas
+            .Where(tld => tld.Day == DateTime.DayOfWeek)
+            .GroupBy(tld => tld.Lesson)
+            .OrderBy(group => group.Key)
+            .ToDictionary(
+                group => group.Key,
+                group => group.ToList());
+
+        foreach (KeyValuePair<int, List<TimetableLessonData>> pair in lessonTimetableLessonDatas)
+        {
+            PeriodHtmlComponent periodHtmlComponent = new(pair.Value, pair.Key);
+            AddChildrenToComponent(periodHtmlComponent);
+        }
     }
 }

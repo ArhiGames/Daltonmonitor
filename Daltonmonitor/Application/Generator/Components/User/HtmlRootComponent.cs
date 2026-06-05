@@ -12,22 +12,7 @@ public class HtmlRootComponent : HtmlComponent
     public HtmlRootComponent(Timetable timetable)
     {
         _timetable = timetable;
-        
-        BuildChildrenData();
-    }
-
-    private void BuildChildrenData()
-    {
-        MainHtmlComponent mainHtmlComponent = new(_timetable);
-        AddChildrenToComponent(mainHtmlComponent);
-    }
-
-    private string GetCssString()
-    {
-        // todo read path from config
-        string css =
-            File.ReadAllText(@"C:\Programmierung\Schule\Daltonmonitor\Daltonmonitor\Daltonmonitor\Assets\style.css");
-        return css.Replace('\n', ' ');
+        SetAsRootComponent();
     }
     
     public override string GenerateHtml()
@@ -48,5 +33,19 @@ public class HtmlRootComponent : HtmlComponent
         stringBuilder.Append(htmlBack);
 
         return stringBuilder.ToString();
+    }
+
+    protected override void Initialize()
+    {
+        MainHtmlComponent mainHtmlComponent = new(_timetable);
+        AddChildrenToComponent(mainHtmlComponent);
+    }
+    
+    private string GetCssString()
+    {
+        // todo read path from config
+        
+        string css = File.ReadAllText(cssPath);
+        return css.Replace('\n', ' ');
     }
 }

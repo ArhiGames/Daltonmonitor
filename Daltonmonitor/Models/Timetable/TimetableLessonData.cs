@@ -20,7 +20,7 @@ public class TimetableLessonData(int lessonId, DaltonType daltonType, List<Teach
 
     public int Lesson { get; init; } = lesson;
 
-    public List<SubstitutionData> SubstitutionData { get; private set; } = [];
+    public List<SubstitutionData> SubstitutionDatas { get; } = [];
 
     public Result AddTeachers(List<Teacher> teachers)
     {
@@ -30,7 +30,7 @@ public class TimetableLessonData(int lessonId, DaltonType daltonType, List<Teach
     
     public Result AddSubstitutionData(SubstitutionData substitutionData)
     {
-        SubstitutionData.Add(substitutionData);
+        SubstitutionDatas.Add(substitutionData);
         return Result.Success();
     }
 }

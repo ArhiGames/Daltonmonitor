@@ -1,5 +1,4 @@
-﻿using Daltonmonitor.Application.Generator.Components.Lib;
-using Daltonmonitor.Application.Generator.Components.User;
+﻿using Daltonmonitor.Application.Generator.Components.User;
 using Daltonmonitor.Models.Timetable;
 
 namespace Daltonmonitor.Application.Generator;
