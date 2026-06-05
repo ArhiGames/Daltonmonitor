@@ -6,12 +6,12 @@ namespace Daltonmonitor.ViewModels;
 
 public partial class MainViewModel : ViewModelBase
 {
-    private readonly SubstitutionReader _substitutionReader = new();
+    private readonly Application.Daltonmonitor _daltonmonitor = new();
     
     [RelayCommand]
     public void StartApplicationLogic()
     {
-        _substitutionReader.StartProcess();
+        _daltonmonitor.Process();
     }
 
     [RelayCommand]

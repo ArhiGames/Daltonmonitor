@@ -16,16 +16,16 @@ public class SubstitutionReader
 
     private Timetable? Timetable { get; set; }
 
-    public Result StartProcess()
+    public Result<Timetable> Process()
     {
        Result readDaltonDataResult = ReadRegularDaltonData();
        if (!readDaltonDataResult.IsSuccess)
        {
-           return readDaltonDataResult;
+           return readDaltonDataResult.Error!;
        }
 
        Result readSubstitutionDataResult = ReadSubstitutionData();
-       return readSubstitutionDataResult.IsSuccess ? Result.Success() : readSubstitutionDataResult;
+       return readSubstitutionDataResult.IsSuccess ? Timetable! : readSubstitutionDataResult.Error!;
     }
 
     private Result ReadRegularDaltonData()
