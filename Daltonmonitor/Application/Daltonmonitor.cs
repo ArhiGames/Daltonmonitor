@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator;
 using Daltonmonitor.Models.Timetable;
 using Daltonmonitor.Models.Types.Common.Result;
@@ -9,6 +10,7 @@ public class Daltonmonitor
 {
     private SubstitutionReader SubstitutionReader { get; } = new();
     private HtmlGenerator HtmlGenerator { get; } = new();
+    private ConfigManager ConfigManager { get; } = new();
 
     public void Process()
     {
@@ -22,7 +24,6 @@ public class Daltonmonitor
         string htmlStructure = HtmlGenerator.GenerateHtmlStructure(timetable);
 
         // todo read output path from config
-       
         File.WriteAllText(file, htmlStructure);
     }
 }

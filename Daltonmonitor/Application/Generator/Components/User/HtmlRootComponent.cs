@@ -44,7 +44,6 @@ public class HtmlRootComponent : HtmlComponent
     private string GetCssString()
     {
         // todo read path from config
-        
         string css = File.ReadAllText(cssPath);
         return css.Replace('\n', ' ');
     }
