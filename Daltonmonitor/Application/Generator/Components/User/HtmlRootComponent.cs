@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Text;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
 using Daltonmonitor.Models.Timetable;
 
@@ -7,19 +8,21 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class HtmlRootComponent : HtmlComponent
 {
+    private readonly ConfigManager _configManager;
     private readonly Timetable _timetable;
 
-    public HtmlRootComponent(Timetable timetable)
+    public HtmlRootComponent(ConfigManager configManager, Timetable timetable)
     {
+        _configManager = configManager;
         _timetable = timetable;
+        
         SetAsRootComponent();
     }
     
     public override string GenerateHtml()
     {
-        // todo read application name from config
-        const string applicationName = "Daltonmonitor";
-        const string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta charset=\"UTF-8\"><title>{applicationName}</title><link rel=\"icon\" type=\"image/x-icon\" href=\"Icon.png\"></head>";
+        string applicationName = _configManager.GetConfigValue(ConfigType.ApplicationName);
+        string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta charset=\"UTF-8\"><title>{applicationName}</title><link rel=\"icon\" type=\"image/x-icon\" href=\"Icon.png\"></head>";
         string htmlStyle = $"<style>{GetCssString()}</style>";
         const string htmlBack = "</body></html>";
 
@@ -43,7 +46,7 @@ public class HtmlRootComponent : HtmlComponent
     
     private string GetCssString()
     {
-        // todo read path from config
+        string cssPath = _configManager.GetConfigValue(ConfigType.StyleSourcePath);
         string css = File.ReadAllText(cssPath);
         return css.Replace('\n', ' ').Replace("    ", "");
     }

@@ -8,9 +8,15 @@ namespace Daltonmonitor.Application;
 
 public class Daltonmonitor
 {
-    private SubstitutionReader SubstitutionReader { get; } = new();
-    private HtmlGenerator HtmlGenerator { get; } = new();
     private ConfigManager ConfigManager { get; } = new();
+    private SubstitutionReader SubstitutionReader { get; }
+    private HtmlGenerator HtmlGenerator { get; }
+
+    public Daltonmonitor()
+    {
+        SubstitutionReader = new SubstitutionReader(ConfigManager);
+        HtmlGenerator = new HtmlGenerator(ConfigManager);
+    }
 
     public void Process()
     {
@@ -23,7 +29,7 @@ public class Daltonmonitor
         Timetable timetable = timetableResult.Value!;
         string htmlStructure = HtmlGenerator.GenerateHtmlStructure(timetable);
 
-        // todo read output path from config
-        File.WriteAllText(file, htmlStructure);
+        string outputFile = ConfigManager.GetConfigValue(ConfigType.OutputPath);
+        File.WriteAllText(outputFile, htmlStructure);
     }
 }

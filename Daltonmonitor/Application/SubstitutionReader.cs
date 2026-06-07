@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Mappers;
 using Daltonmonitor.Models.Substitution;
 using Daltonmonitor.Models.Timetable;
@@ -11,7 +12,7 @@ using Daltonmonitor.Models.Types.Common.Result;
 
 namespace Daltonmonitor.Application;
 
-public class SubstitutionReader
+public class SubstitutionReader(ConfigManager configManager)
 {
     private Timetable? Timetable { get; set; }
 
@@ -29,7 +30,8 @@ public class SubstitutionReader
 
     private Result ReadRegularDaltonData()
     {
-        string[] lines = File.ReadAllLines(File001);
+        string gpu001Path = configManager.GetConfigValue(ConfigType.GPU001);
+        string[] lines = File.ReadAllLines(gpu001Path);
         Timetable = new Timetable(lines.Length);
 
         foreach (string line in lines)
@@ -73,7 +75,8 @@ public class SubstitutionReader
 
     private Result ReadSubstitutionData()
     {
-        string[] lines = File.ReadAllLines(File014);
+        string gpu014Path = configManager.GetConfigValue(ConfigType.GPU014);
+        string[] lines = File.ReadAllLines(gpu014Path);
         
         foreach (string line in lines)
         {

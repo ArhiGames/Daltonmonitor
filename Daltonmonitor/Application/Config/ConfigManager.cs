@@ -8,8 +8,8 @@ namespace Daltonmonitor.Application.Config;
 
 public class ConfigManager
 {
-    private const string ConfigPath = "./config1.ini"; 
-    public List<ConfigEntryData> ConfigEntryDatas { get; } = [];
+    private const string ConfigPath = "./config1.ini";
+    private List<ConfigEntryData> ConfigEntryDatas { get; } = [];
 
     public ConfigManager()
     {
@@ -34,7 +34,15 @@ public class ConfigManager
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowPreviewingDays, "2", "the amount of future days that should be baked into the html"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowLabels, "true"));
         
+        /* Style */
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigType.StyleSourcePath, "./style.css", "The path to the css file that will be baked into the generated html"));
+        
         InitializeConfigData();
+    }
+
+    public string GetConfigValue(ConfigType configType)
+    {
+        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configType)!.CurrentValue;
     }
 
     private void InitializeConfigData()

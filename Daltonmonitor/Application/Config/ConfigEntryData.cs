@@ -15,7 +15,8 @@ public enum ConfigType
     ShowWorkshops,
     ShowVacationDays,
     ShowPreviewingDays,
-    ShowLabels
+    ShowLabels,
+    StyleSourcePath
 }
 
 public class ConfigEntryData(string category, ConfigType identifier, string defaultValue, string? comment = null)
