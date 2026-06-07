@@ -58,7 +58,7 @@ header {
 main {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    width: 90%;
+    width: 90vw;
     margin: auto;
     gap: 4rem 2rem;
 }
@@ -96,9 +96,10 @@ main {
 }
 
 .day {
-    
     display: grid;
     gap: .5rem ;
+    width: calc((90vw - 2.2rem)/2);
+    height: fit-content;
 
     --padding-tag: .125rem;
     --padding: .25rem;
