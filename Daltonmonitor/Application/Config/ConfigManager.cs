@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,25 +14,25 @@ public class ConfigManager
     public ConfigManager()
     {
         /* Paths */
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", "GPU001", ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", "GPU014", ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", "GPU018", ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", "OutputPath", "./output.html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.GPU001, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.GPU014, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.GPU018, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.OutputPath, "./output.html"));
         
         /* Runtime */
-        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", "CheckInterval", "30", "check interval in seconds"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigType.CheckInterval, "30", "check interval in seconds"));
         
         /* Data */
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", "ApplicationName", "Daltonmonitor"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", "DaltonIdentifiers", "DAL"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", "WorkshopIdentifiers", "DAL+"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", "MentorIdentifiers", ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.ApplicationName, "Daltonmonitor"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.DaltonIdentifiers, "DAL"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.WorkshopIdentifiers, "DAL+"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.MentorIdentifiers, ""));
         
         /* Html */
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", "ShowWorkshops", "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", "ShowVacationDays", "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", "PreviewingDays", "2", "the amount of future days that should be baked into the html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", "ShowLabels", "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowWorkshops, "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowVacationDays, "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowPreviewingDays, "2", "the amount of future days that should be baked into the html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowLabels, "true"));
         
         InitializeConfigData();
     }
@@ -66,8 +67,9 @@ public class ConfigManager
                 {
                     stringBuilder.Append($";{configEntryData.Comment}\n");
                 }
-                stringBuilder.Append($"{configEntryData.Identifier}={configEntryData.CurrentValue}\n");
+                stringBuilder.Append($"{configEntryData.Identifier.ToString()}={configEntryData.CurrentValue}\n");
             }
+            stringBuilder.Append('\n');
         }
         
         File.WriteAllText(ConfigPath, stringBuilder.ToString());
@@ -85,9 +87,15 @@ public class ConfigManager
             }
 
             string identifier = configData[..configData.IndexOf('=')];
+            bool parsedSuccessfully = Enum.TryParse(identifier, false, out ConfigType configType);
+            if (!parsedSuccessfully)
+            {
+                continue;
+            }
+            
             string value = configData[(configData.IndexOf('=') + 1)..];
             
-            ConfigEntryData? configEntryData = ConfigEntryDatas.Find(ced => ced.Identifier == identifier);
+            ConfigEntryData? configEntryData = ConfigEntryDatas.Find(ced => ced.Identifier == configType);
             configEntryData?.UpdateCurrentValue(value);
         }
     }

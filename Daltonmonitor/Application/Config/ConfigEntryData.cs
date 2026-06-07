@@ -1,10 +1,28 @@
 ﻿namespace Daltonmonitor.Application.Config;
 
-public class ConfigEntryData(string category, string identifier, string defaultValue, string? comment = null)
+public enum ConfigType
+{
+    None = 0,
+    GPU001,
+    GPU014,
+    GPU018,
+    OutputPath,
+    CheckInterval,
+    ApplicationName,
+    DaltonIdentifiers,
+    WorkshopIdentifiers,
+    MentorIdentifiers,
+    ShowWorkshops,
+    ShowVacationDays,
+    ShowPreviewingDays,
+    ShowLabels
+}
+
+public class ConfigEntryData(string category, ConfigType identifier, string defaultValue, string? comment = null)
 {
     public string Category { get; init; } = category;
 
-    public string Identifier { get; init; } = identifier;
+    public ConfigType Identifier { get; init; } = identifier;
 
     public string? Comment { get; init; } = comment;
 
