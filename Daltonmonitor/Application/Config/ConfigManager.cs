@@ -27,6 +27,7 @@ public class ConfigManager
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.DaltonIdentifiers, "DAL"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.WorkshopIdentifiers, "DAL+"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.MentorIdentifiers, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.FloorCount, "4", "The amount of floors that should be baked into the html"));
         
         /* Html */
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowWorkshops, "true"));

@@ -8,6 +8,7 @@
         x:Class="Daltonmonitor.Views.MainWindow"
         Width="600" Height="650"
         Icon="/Assets/avalonia-logo.ico"
+        CanResize="False"
         Title="Daltonmonitor">
         <views:MainView />
 </Window>

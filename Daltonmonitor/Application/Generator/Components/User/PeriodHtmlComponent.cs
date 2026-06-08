@@ -9,24 +9,6 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int lesson) : HtmlComponent
 {
-    public override string GenerateHtml()
-    {
-        const string htmlHead = "<div class=\"period\">";
-        string htmlHour = $"<h1>{lesson}. Stunde</h1>";
-        const string htmlBack = "</div>";
-
-        StringBuilder stringBuilder = new();
-        stringBuilder.Append(htmlHead);
-        stringBuilder.Append(htmlHour);
-        foreach (HtmlComponent htmlComponent in Children)
-        {
-            stringBuilder.Append(htmlComponent.GenerateHtml());
-        }
-        stringBuilder.Append(htmlBack);
-
-        return stringBuilder.ToString();
-    }
-
     protected override void Initialize()
     {
         /* floor, data*/
@@ -43,6 +25,24 @@ public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int less
             FloorHtmlComponent floorHtmlComponent = new(keyValuePair.Value, keyValuePair.Key);
             AddChildrenToComponent(floorHtmlComponent);
         }
+    }
+    
+    public override string GenerateHtml()
+    {
+        const string htmlHead = "<div class=\"period\">";
+        string htmlHour = $"<h1>{lesson}. Stunde</h1>";
+        const string htmlBack = "</div>";
+
+        StringBuilder stringBuilder = new();
+        stringBuilder.Append(htmlHead);
+        stringBuilder.Append(htmlHour);
+        foreach (HtmlComponent htmlComponent in Children)
+        {
+            stringBuilder.Append(htmlComponent.GenerateHtml());
+        }
+        stringBuilder.Append(htmlBack);
+
+        return stringBuilder.ToString();
     }
     
     private int GetFloorByRoom(Room? room)

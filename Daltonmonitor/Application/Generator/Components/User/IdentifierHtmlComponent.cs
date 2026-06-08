@@ -24,6 +24,8 @@ public class IdentifierHtmlComponent : HtmlComponent
         _isSubstitute = isSubstitute;
     }
     
+    protected override void Initialize() {}
+    
     public override string GenerateHtml()
     {
         string htmlClass = _identifierType switch
@@ -37,6 +39,4 @@ public class IdentifierHtmlComponent : HtmlComponent
         string htmlElement = $"<div class=\"{htmlClass}\">{_identifier}</div>";
         return htmlElement;
     }
-
-    protected override void Initialize() {}
 }

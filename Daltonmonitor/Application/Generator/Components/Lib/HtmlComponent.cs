@@ -47,25 +47,4 @@ public abstract class HtmlComponent
     {
         Initialize();
     }
-    
-    public HtmlComponent? GetChildrenAtIndex(int idx)
-    {
-        return Children.Count > idx ? Children[idx] : null;
-    }
-
-    public bool RemoveChildrenAtIndex(int idx)
-    {
-        if (Children.Count <= idx)
-        {
-            return false;
-        }
-
-        Children.RemoveAt(idx);
-        return true;
-    }
-
-    public void ClearChildren()
-    {
-        Children.Clear();
-    }
 }
