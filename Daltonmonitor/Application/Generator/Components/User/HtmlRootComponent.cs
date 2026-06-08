@@ -52,6 +52,6 @@ public class HtmlRootComponent : HtmlComponent
     {
         string cssPath = _configManager.GetConfigValue(ConfigType.StyleSourcePath);
         string css = File.ReadAllText(cssPath);
-        return css.Replace('\n', ' ').Replace("    ", "");
+        return css.Replace("\n", "").Replace("    ", "");
     }
 }
