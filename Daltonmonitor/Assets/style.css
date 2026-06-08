@@ -17,6 +17,7 @@
     --shadow-minor: 0 4px 4px 0 rgba(0,0,0,.2);
 
     --effective-page-width: 90vw;
+    --displayable-floors-per-period: 10;
     
     font-family: Ubuntu, sans-serif;
 }
@@ -76,10 +77,50 @@ main {
         width: 100%;
     }
 }
+@media only screen and (max-width: 800px) {
+    :root {
+        --displayable-floors-per-period: 5;
+    }
+}
+@media only screen and (max-width: 600px) {
+    :root {
+        --displayable-floors-per-period: 4;
+    }
+    
+    header {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(2, auto);
+        img {
+            display: none;
+        }
+
+        div.last-update {
+            justify-self: center;
+
+            display: flex;
+            gap: .1rem;
+            flex-wrap: wrap;
+        }
+    }
+}
+@media only screen and (max-width: 400px) {
+    :root {
+        --displayable-floors-per-period: 2;
+    }
+    
+    header h1 {
+        font-size: 4rem;
+    }
+}
+@media only screen and (max-width: 300px) {
+    :root {
+        --displayable-floors-per-period: 1;
+    }
+}
 
 .day {
     display: grid;
-    grid-template-columns: repeat(var(--floor-count), auto);
+    grid-template-columns: repeat(min(var(--floor-count), var(--displayable-floors-per-period)), auto);
     gap: .5rem ;
     width: calc((var(--effective-page-width) - 2.2rem)/2);
     height: fit-content;
@@ -110,11 +151,12 @@ main {
         grid-template-columns: subgrid;
         background-color: var(--element-color);
         border: var(--border);
+        grid-row-gap: .75rem;
         
         .floor {
             display: flex;
             flex-direction: column;
-            grid-column: var(--floor, auto);
+            grid-column: mod(var(--floor, auto), var(--displayable-floors-per-period));
             
             .lesson {
                 display: flex;
