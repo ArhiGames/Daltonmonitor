@@ -31,7 +31,7 @@ public class HtmlRootComponent : HtmlComponent
     public override string GenerateHtml()
     {
         string applicationName = ConfigManager.GetConfigValue(ConfigType.ApplicationName);
-        string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta charset=\"UTF-8\"><title>{applicationName}</title><link rel=\"icon\" type=\"image/x-icon\" href=\"Icon.png\"></head>";
+        string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=\"UTF-8\"><title>{applicationName}</title><link rel=\"icon\" type=\"image/x-icon\" href=\"Icon.png\"></head>";
         string htmlStyle = $"<style>{GetCssString()}</style>";
         const string htmlBack = "</body></html>";
 
