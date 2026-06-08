@@ -89,7 +89,7 @@ public class ConfigManager
 
         foreach (string configData in configDataLines)
         {
-            if (configData.StartsWith(';') || configData.StartsWith('['))
+            if (configData.StartsWith(';') || configData.StartsWith('[') || configData.IsWhiteSpace())
             {
                 continue;
             }

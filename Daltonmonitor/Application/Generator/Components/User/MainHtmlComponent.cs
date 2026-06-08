@@ -26,13 +26,14 @@ public class MainHtmlComponent(Timetable timetable) : HtmlComponent
     protected override void Initialize()
     {
         DateTime today = DateTime.UtcNow;
-        DateTime day = new(2026, 5, 29);
-
-        DayHtmlComponent dayHtmlComponent = new(timetable, day);
-        AddChildrenToComponent(dayHtmlComponent);
 
         DateTime day2 = new(2026, 5, 28);
         DayHtmlComponent day2HtmlComponent = new(timetable, day2);
         AddChildrenToComponent(day2HtmlComponent);
+        
+        DateTime day = new(2026, 5, 29);
+        DayHtmlComponent dayHtmlComponent = new(timetable, day);
+        AddChildrenToComponent(dayHtmlComponent);
+
     }
 }

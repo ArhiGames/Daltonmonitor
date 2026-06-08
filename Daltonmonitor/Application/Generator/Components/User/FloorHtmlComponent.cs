@@ -9,7 +9,7 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
 {
     public override string GenerateHtml()
     {
-        string htmlHead = $"<div class=\"floor\" data-floor-index=\"{floor}\">";
+        string htmlHead = $"<div class=\"floor\" style=\"--floor: {floor};\">";
         const string htmlBack = "</div>";
 
         StringBuilder stringBuilder = new();

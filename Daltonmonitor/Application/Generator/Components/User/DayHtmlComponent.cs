@@ -13,7 +13,8 @@ public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComp
 
     public override string GenerateHtml()
     {
-        const string htmlHead = "<div class=\"day\">";
+        // todo calculate floor count dynamically
+        string htmlHead = $"<div class=\"day\" style=\"--floor-count: {4};\">";
         
         string dateTimeString = DateTime.ToShortDateString();
         string htmlDay = $"<h1 class=\"date\">{dateTimeString}</h1>";

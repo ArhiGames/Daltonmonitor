@@ -40,7 +40,7 @@ public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int less
 
         foreach (KeyValuePair<int, List<TimetableLessonData>> keyValuePair in timetableLessonDatas)
         {
-            FloorHtmlComponent floorHtmlComponent = new(keyValuePair.Value, keyValuePair.Key - 1);
+            FloorHtmlComponent floorHtmlComponent = new(keyValuePair.Value, keyValuePair.Key);
             AddChildrenToComponent(floorHtmlComponent);
         }
     }

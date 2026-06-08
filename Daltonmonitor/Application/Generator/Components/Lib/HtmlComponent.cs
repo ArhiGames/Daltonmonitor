@@ -9,8 +9,8 @@ public abstract class HtmlComponent
     protected List<HtmlComponent> Children { get; } = [];
     protected int MaxChildrenCount = -1;
     
-    public abstract string GenerateHtml();
     protected abstract void Initialize();
+    public abstract string GenerateHtml();
 
     protected int AddChildrenToComponent(HtmlComponent htmlComponent)
     {

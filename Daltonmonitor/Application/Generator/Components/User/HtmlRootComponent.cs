@@ -29,6 +29,7 @@ public class HtmlRootComponent : HtmlComponent
         StringBuilder stringBuilder = new();
         stringBuilder.Append(htmlHead);
         stringBuilder.Append(htmlStyle);
+        stringBuilder.Append("<body>");
         foreach (HtmlComponent htmlComponent in Children)
         {
             stringBuilder.Append(htmlComponent.GenerateHtml());
@@ -40,6 +41,9 @@ public class HtmlRootComponent : HtmlComponent
 
     protected override void Initialize()
     {
+        HeaderHtmlComponent headerHtmlComponent = new();
+        AddChildrenToComponent(headerHtmlComponent);
+        
         MainHtmlComponent mainHtmlComponent = new(_timetable);
         AddChildrenToComponent(mainHtmlComponent);
     }
