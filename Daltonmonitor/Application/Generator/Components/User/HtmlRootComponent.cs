@@ -8,20 +8,29 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class HtmlRootComponent : HtmlComponent
 {
-    private readonly ConfigManager _configManager;
+    public ConfigManager ConfigManager { get; }
     private readonly Timetable _timetable;
 
     public HtmlRootComponent(ConfigManager configManager, Timetable timetable)
     {
-        _configManager = configManager;
+        ConfigManager = configManager;
         _timetable = timetable;
         
         SetAsRootComponent();
     }
     
+    protected override void Initialize()
+    {
+        HeaderHtmlComponent headerHtmlComponent = new();
+        AddChildrenToComponent(headerHtmlComponent);
+        
+        MainHtmlComponent mainHtmlComponent = new(_timetable);
+        AddChildrenToComponent(mainHtmlComponent);
+    }
+    
     public override string GenerateHtml()
     {
-        string applicationName = _configManager.GetConfigValue(ConfigType.ApplicationName);
+        string applicationName = ConfigManager.GetConfigValue(ConfigType.ApplicationName);
         string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta charset=\"UTF-8\"><title>{applicationName}</title><link rel=\"icon\" type=\"image/x-icon\" href=\"Icon.png\"></head>";
         string htmlStyle = $"<style>{GetCssString()}</style>";
         const string htmlBack = "</body></html>";
@@ -38,19 +47,10 @@ public class HtmlRootComponent : HtmlComponent
 
         return stringBuilder.ToString();
     }
-
-    protected override void Initialize()
-    {
-        HeaderHtmlComponent headerHtmlComponent = new();
-        AddChildrenToComponent(headerHtmlComponent);
-        
-        MainHtmlComponent mainHtmlComponent = new(_timetable);
-        AddChildrenToComponent(mainHtmlComponent);
-    }
     
     private string GetCssString()
     {
-        string cssPath = _configManager.GetConfigValue(ConfigType.StyleSourcePath);
+        string cssPath = ConfigManager.GetConfigValue(ConfigType.StyleSourcePath);
         string css = File.ReadAllText(cssPath);
         return css.Replace("\n", "").Replace("    ", "");
     }

@@ -12,6 +12,7 @@ public enum ConfigType
     DaltonIdentifiers,
     WorkshopIdentifiers,
     MentorIdentifiers,
+    FloorCount,
     ShowWorkshops,
     ShowVacationDays,
     ShowPreviewingDays,

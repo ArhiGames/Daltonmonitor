@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
 using Daltonmonitor.Models.Timetable;
 
@@ -13,10 +14,13 @@ public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComp
 
     public override string GenerateHtml()
     {
-        // todo calculate floor count dynamically
-        string htmlHead = $"<div class=\"day\" style=\"--floor-count: {4};\">";
+        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
+        int floorCount = Convert.ToInt32(htmlRootComponent.ConfigManager.GetConfigValue(ConfigType.FloorCount));
         
-        string dateTimeString = DateTime.ToShortDateString();
+        string dataDateTimeString = DateTime.ToString("yyyyMMdd");
+        string htmlHead = $"<div class=\"day\" data-date={dataDateTimeString} style=\"--floor-count: {floorCount};\">";
+        
+        string dateTimeString = DateTime.ToLongDateString();
         string htmlDay = $"<h1 class=\"date\">{dateTimeString}</h1>";
         
         const string htmlBack = "</div>";

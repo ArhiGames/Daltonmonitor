@@ -8,21 +8,6 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : HtmlComponent
 {
-    public override string GenerateHtml()
-    {
-        const string htmlHead = "<div class=\"lesson\">";
-        const string htmlBack = "</div>";
-
-        StringBuilder stringBuilder = new();
-        stringBuilder.Append(htmlHead);
-        foreach (HtmlComponent htmlComponent in Children)
-        {
-            stringBuilder.Append(htmlComponent.GenerateHtml());
-        }
-        stringBuilder.Append(htmlBack);
-        return stringBuilder.ToString();
-    }
-
     protected override void Initialize()
     {
         Room room = timetableLessonData.Rooms[0];
@@ -76,5 +61,20 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         {
             AddChildrenToComponent(substituteTeacherIdentifierHtmlComponent);
         }
+    }
+    
+    public override string GenerateHtml()
+    {
+        const string htmlHead = "<div class=\"lesson\">";
+        const string htmlBack = "</div>";
+
+        StringBuilder stringBuilder = new();
+        stringBuilder.Append(htmlHead);
+        foreach (HtmlComponent htmlComponent in Children)
+        {
+            stringBuilder.Append(htmlComponent.GenerateHtml());
+        }
+        stringBuilder.Append(htmlBack);
+        return stringBuilder.ToString();
     }
 }
