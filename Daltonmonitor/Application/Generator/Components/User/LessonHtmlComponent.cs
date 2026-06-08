@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Daltonmonitor.Application.Generator.Components.Lib;
 using Daltonmonitor.Models.Substitution;
 using Daltonmonitor.Models.Timetable;
@@ -8,6 +9,8 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : HtmlComponent
 {
+    private bool _isCancelled;
+    
     protected override void Initialize()
     {
         Room room = timetableLessonData.Rooms[0];
@@ -15,8 +18,6 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
 
         IdentifierHtmlComponent? substituteRoomIdentifierHtmlComponent = null;
         IdentifierHtmlComponent? substituteTeacherIdentifierHtmlComponent = null;
-
-        bool isCancelled = false;
         
         DayHtmlComponent dayHtmlComponent = GetOuter<DayHtmlComponent>()!;
         foreach (SubstitutionData substitutionData in timetableLessonData.SubstitutionDatas)
@@ -28,7 +29,7 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
 
             if (substitutionData.SubstitutionType == SubstitutionType.Cancelled)
             {
-                isCancelled = true;
+                _isCancelled = true;
                 break;
             }
 
@@ -44,8 +45,29 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
             }
             break;
         }
+
+        switch (timetableLessonData.DaltonType)
+        {
+            case DaltonType.None:
+            case DaltonType.Dalton:
+                break;
+            case DaltonType.Workshop:
+            {
+                LabelHtmlComponent labelHtmlComponent = new(LabelType.Workshop);
+                AddChildrenToComponent(labelHtmlComponent);
+                break;
+            }
+            case DaltonType.Mentor:
+            {
+                LabelHtmlComponent labelHtmlComponent = new(LabelType.Mentor);
+                AddChildrenToComponent(labelHtmlComponent);
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
         
-        IdentifierHtmlComponent roomIdentifierHtmlComponent = new(IdentifierType.Room, room.RoomId, isCancelled);
+        IdentifierHtmlComponent roomIdentifierHtmlComponent = new(IdentifierType.Room, room.RoomId, _isCancelled);
         AddChildrenToComponent(roomIdentifierHtmlComponent);
 
         if (substituteRoomIdentifierHtmlComponent is not null)
@@ -54,7 +76,7 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         }
 
         IdentifierHtmlComponent teacherIdentifierHtmlComponent =
-            new(IdentifierType.Teacher, teacher.TeacherName, isCancelled);
+            new(IdentifierType.Teacher, teacher.TeacherName, _isCancelled);
         AddChildrenToComponent(teacherIdentifierHtmlComponent);
 
         if (substituteTeacherIdentifierHtmlComponent is not null)
@@ -65,7 +87,8 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
     
     public override string GenerateHtml()
     {
-        const string htmlHead = "<div class=\"lesson\">";
+        string removedString = _isCancelled ? "removed" : "";
+        string htmlHead = $"<div class=\"lesson {removedString}\">";
         const string htmlBack = "</div>";
 
         StringBuilder stringBuilder = new();

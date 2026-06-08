@@ -34,19 +34,29 @@ public class SubstitutionReader(ConfigManager configManager)
         string[] lines = File.ReadAllLines(gpu001Path);
         Timetable = new Timetable(lines.Length);
 
+        bool showWorkshops = configManager.GetConfigValue(ConfigType.ShowWorkshops) == "true";
+        
         foreach (string line in lines)
         {
             string[] lineContents = line.Replace('"', ' ').EnhancedSplit(',');
 
-            // Todo idx from config
-            if (!IsDalton(lineContents[3]))
+            DaltonType daltonType = GetDaltonType(lineContents[3]);
+            switch (daltonType)
             {
-                continue;
+                case DaltonType.None:
+                    continue;
+                case DaltonType.Workshop:
+                    if (!showWorkshops) continue;
+                    break;
+                case DaltonType.Dalton:
+                case DaltonType.Mentor:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            
+
             int lessonId = Convert.ToInt32(lineContents[0]);
             List<Teacher> teachers = [new(lineContents[2])];
-            DaltonType daltonType = GetDaltonType(lineContents[3]);
             
             string[] roomsIdentifiers = lineContents[4].EnhancedSplit('~');
             List<Room> rooms = roomsIdentifiers.Select(roomIdentifier => new Room(roomIdentifier)).ToList();
@@ -82,7 +92,8 @@ public class SubstitutionReader(ConfigManager configManager)
         {
             string[] lineContents = line.Replace('"', ' ').EnhancedSplit(',');
 
-            if (!IsDalton(lineContents[7]))
+            DaltonType daltonType = GetDaltonType(lineContents[7]);
+            if (daltonType == DaltonType.None)
             {
                 continue;
             }
@@ -112,14 +123,16 @@ public class SubstitutionReader(ConfigManager configManager)
         return Result.Success();
     }
 
-    private static DaltonType GetDaltonType(string identifier)
+    private DaltonType GetDaltonType(string identifier)
     {
-        return identifier switch
+        string[] daltonIdentifiers = configManager.GetConfigAsList(ConfigType.DaltonIdentifiers);
+        if (daltonIdentifiers.Contains(identifier))
         {
-            "DAL+" => DaltonType.Workshop,
-            "DAL" => DaltonType.Dalton,
-            _ => DaltonType.None
-        };
+            return DaltonType.Dalton;
+        }
+        
+        string[] workshopIdentifiers = configManager.GetConfigAsList(ConfigType.WorkshopIdentifiers);
+        return workshopIdentifiers.Contains(identifier) ? DaltonType.Workshop : DaltonType.None;
     }
 
     private static SubstitutionType GetSubstitutionType(string identifier)
@@ -140,11 +153,5 @@ public class SubstitutionReader(ConfigManager configManager)
             "E" => SubstitutionType.Exam,
             _ => SubstitutionType.None
         };
-    }
-    
-    private static bool IsDalton(string identifier)
-    {
-        // Todo read DAL+ / DAL identifier from config
-        return identifier.Equals("DAL+") || identifier.Equals("DAL");
     }
 }

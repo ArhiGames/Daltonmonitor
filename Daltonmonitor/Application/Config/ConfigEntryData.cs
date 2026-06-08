@@ -7,16 +7,24 @@ public enum ConfigType
     GPU014,
     GPU018,
     OutputPath,
+    
     CheckInterval,
+    
     ApplicationName,
     DaltonIdentifiers,
     WorkshopIdentifiers,
     MentorIdentifiers,
     FloorCount,
+    
     ShowWorkshops,
     ShowVacationDays,
-    ShowPreviewingDays,
     ShowLabels,
+    PreviewingDaysCount,
+    SpecialLabel,
+    WorkshopLabel,
+    BoundDaltonLabel,
+    MentorLabel,
+    
     StyleSourcePath
 }
 
@@ -40,5 +48,10 @@ public class ConfigEntryData(string category, ConfigType identifier, string defa
     public void ResetToDefault()
     {
         CurrentValue = DefaultValue;
+    }
+
+    public string[] AsList()
+    {
+        return CurrentValue.Split(',');
     }
 }

@@ -32,8 +32,13 @@ public class ConfigManager
         /* Html */
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowWorkshops, "true"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowVacationDays, "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowPreviewingDays, "2", "the amount of future days that should be baked into the html"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowLabels, "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.PreviewingDaysCount, "2", "the amount of future days that should be baked into the html"));
+        
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.SpecialLabel, "SP", "Will only be used if the dalton lesson doesn't fit any of the predefined tags"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.WorkshopLabel, "WS", "The string that will be baked into a tag if the dalton lesson is a workshop"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.BoundDaltonLabel, "GEB", "The string that will be baked into a tag if the dalton lesson is a bound dalton lesson"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.MentorLabel, "MEN", "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor"));
         
         /* Style */
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigType.StyleSourcePath, "./style.css", "The path to the css file that will be baked into the generated html"));
@@ -41,6 +46,11 @@ public class ConfigManager
         InitializeConfigData();
     }
 
+    public string[] GetConfigAsList(ConfigType configType)
+    {
+        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configType)!.AsList();
+    }
+    
     public string GetConfigValue(ConfigType configType)
     {
         return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configType)!.CurrentValue;
@@ -84,7 +94,7 @@ public class ConfigManager
         File.WriteAllText(ConfigPath, stringBuilder.ToString());
     }
 
-    private void ReadConfigFile()
+    public void ReadConfigFile()
     {
         string[] configDataLines = File.ReadAllLines(ConfigPath);
 

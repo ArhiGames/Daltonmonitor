@@ -77,6 +77,8 @@ public class Daltonmonitor
 
     private void Process()
     {
+        ConfigManager.ReadConfigFile();
+        
         Result<Timetable> timetableResult = SubstitutionReader.Process();
         if (!timetableResult.IsSuccess)
         {

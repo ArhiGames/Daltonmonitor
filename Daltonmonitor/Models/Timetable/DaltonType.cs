@@ -4,5 +4,6 @@ public enum DaltonType
 {
     None = 0,
     Dalton,
-    Workshop
+    Workshop,
+    Mentor
 }
