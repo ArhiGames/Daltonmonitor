@@ -23,7 +23,7 @@ public class MainHtmlComponent(Timetable timetable) : HtmlComponent
             if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
             {
                 DayHtmlComponent dayHtmlComponent = new(timetable, currentDate);
-                AddChildrenToComponent(dayHtmlComponent);
+                AddChildToComponent(dayHtmlComponent);
                 outstandingDays--;
             }
             

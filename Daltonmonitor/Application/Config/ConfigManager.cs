@@ -65,12 +65,12 @@ public class ConfigManager
 
     public string[] GetConfigAsList(ConfigIdentifier configIdentifier)
     {
-        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.AsList();
+        return configIdentifier == ConfigIdentifier.None ? [] : ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.AsList();
     }
     
     public string GetConfigValue(ConfigIdentifier configIdentifier)
     {
-        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.CurrentValue;
+        return configIdentifier == ConfigIdentifier.None ? "" : ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.CurrentValue;
     }
 
     private void InitializeConfigData()

@@ -22,10 +22,10 @@ public class HtmlRootComponent : HtmlComponent
     protected override void Initialize()
     {
         HeaderHtmlComponent headerHtmlComponent = new();
-        AddChildrenToComponent(headerHtmlComponent);
+        AddChildToComponent(headerHtmlComponent);
         
         MainHtmlComponent mainHtmlComponent = new(_timetable);
-        AddChildrenToComponent(mainHtmlComponent);
+        AddChildToComponent(mainHtmlComponent);
     }
     
     public override string GenerateHtml()
@@ -51,7 +51,14 @@ public class HtmlRootComponent : HtmlComponent
     private string GetCssString()
     {
         string cssPath = ConfigManager.GetConfigValue(ConfigIdentifier.StyleSourcePath);
-        string css = File.ReadAllText(cssPath);
-        return css.Replace("\n", "").Replace("    ", "");
+        try
+        {
+            string css = File.ReadAllText(cssPath);
+            return css.Replace("\n", "").Replace("    ", "");
+        }
+        catch
+        {
+            return "";
+        }
     }
 }

@@ -12,7 +12,7 @@ public abstract class HtmlComponent
     protected abstract void Initialize();
     public abstract string GenerateHtml();
 
-    protected int AddChildrenToComponent(HtmlComponent htmlComponent)
+    protected int AddChildToComponent(HtmlComponent htmlComponent)
     {
         if (MaxChildrenCount >= Children.Count)
         {

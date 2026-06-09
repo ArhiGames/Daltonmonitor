@@ -23,6 +23,27 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
         DayHtmlComponent dayHtmlComponent = GetOuter<DayHtmlComponent>()!;
         
+        switch (timetableLessonData.DaltonType)
+        {
+            case DaltonType.None:
+            case DaltonType.Dalton:
+                break;
+            case DaltonType.Workshop:
+            {
+                LabelHtmlComponent labelHtmlComponent = new(LabelType.Workshop);
+                AddChildToComponent(labelHtmlComponent);
+                break;
+            }
+            case DaltonType.Mentor:
+            {
+                LabelHtmlComponent labelHtmlComponent = new(LabelType.Mentor);
+                AddChildToComponent(labelHtmlComponent);
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+        
         foreach (SubstitutionData substitutionData in timetableLessonData.SubstitutionDatas)
         {
             if (dayHtmlComponent.DateTime.Day != substitutionData.DateTime.Day)
@@ -48,43 +69,22 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
             }
             break;
         }
-
-        switch (timetableLessonData.DaltonType)
-        {
-            case DaltonType.None:
-            case DaltonType.Dalton:
-                break;
-            case DaltonType.Workshop:
-            {
-                LabelHtmlComponent labelHtmlComponent = new(LabelType.Workshop);
-                AddChildrenToComponent(labelHtmlComponent);
-                break;
-            }
-            case DaltonType.Mentor:
-            {
-                LabelHtmlComponent labelHtmlComponent = new(LabelType.Mentor);
-                AddChildrenToComponent(labelHtmlComponent);
-                break;
-            }
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
         
         IdentifierHtmlComponent roomIdentifierHtmlComponent = new(IdentifierType.Room, room.RoomId, _isCancelled);
-        AddChildrenToComponent(roomIdentifierHtmlComponent);
+        AddChildToComponent(roomIdentifierHtmlComponent);
 
         if (substituteRoomIdentifierHtmlComponent is not null)
         {
-            AddChildrenToComponent(substituteRoomIdentifierHtmlComponent);
+            AddChildToComponent(substituteRoomIdentifierHtmlComponent);
         }
 
         IdentifierHtmlComponent teacherIdentifierHtmlComponent =
             new(IdentifierType.Teacher, teacher.TeacherName, _isCancelled);
-        AddChildrenToComponent(teacherIdentifierHtmlComponent);
+        AddChildToComponent(teacherIdentifierHtmlComponent);
 
         if (substituteTeacherIdentifierHtmlComponent is not null)
         {
-            AddChildrenToComponent(substituteTeacherIdentifierHtmlComponent);
+            AddChildToComponent(substituteTeacherIdentifierHtmlComponent);
         }
 
         bool highlightMentorLesson =
@@ -92,11 +92,12 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         if (timetableLessonData.DaltonType == DaltonType.Mentor && highlightMentorLesson)
         {
             Class? classData = timetableLessonData.Classes.Count > 0 ? timetableLessonData.Classes[0] : null;
-            if (classData is null) return;
-            
-            MetaLessonInfoHtmlComponent metaLessonInfoHtmlComponent =
-                new(MetadataType.Mentor, classData.ClassDescriptor);
-            AddChildrenToComponent(metaLessonInfoHtmlComponent);
+            if (classData is not null)
+            {
+                MetaLessonInfoHtmlComponent metaLessonInfoHtmlComponent =
+                    new(MetadataType.Mentor, classData.ClassDescriptor);
+                AddChildToComponent(metaLessonInfoHtmlComponent);
+            }
         } 
     }
     

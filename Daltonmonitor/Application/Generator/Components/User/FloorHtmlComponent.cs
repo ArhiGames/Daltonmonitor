@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
 using Daltonmonitor.Models.Timetable;
 
@@ -10,11 +12,17 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
 {
     protected override void Initialize()
     {
-        List<TimetableLessonData> orderedLessons = timetableLessonDatas.OrderBy(tld => tld.Rooms[0].RoomId).ToList(); 
+        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
+        
+        List<TimetableLessonData> orderedLessons = timetableLessonDatas
+            .OrderBy(tld => DoesDaltonTypeShowTag(htmlRootComponent.ConfigManager, tld.DaltonType))
+            .ThenBy(tld => tld.Rooms[0].RoomId)
+            .ToList();
+        
         foreach (TimetableLessonData timetableLessonData in orderedLessons)
         {
             LessonHtmlComponent lessonHtmlComponent = new(timetableLessonData);
-            AddChildrenToComponent(lessonHtmlComponent);
+            AddChildToComponent(lessonHtmlComponent);
         }
     }
     
@@ -31,5 +39,19 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
         }
         stringBuilder.Append(htmlBack);
         return stringBuilder.ToString();
+    }
+
+    private bool DoesDaltonTypeShowTag(ConfigManager configManager, DaltonType daltonType)
+    {
+        ConfigIdentifier configIdentifier = daltonType switch
+        {
+            DaltonType.None or DaltonType.Dalton => ConfigIdentifier.None,
+            DaltonType.Workshop => ConfigIdentifier.WorkshopLabel,
+            DaltonType.Mentor => ConfigIdentifier.MentorLabel,
+            _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
+        };
+
+        bool shouldShowTag = configManager.GetConfigValue(configIdentifier) != string.Empty;
+        return shouldShowTag;
     }
 }

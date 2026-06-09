@@ -67,9 +67,18 @@ public class SubstitutionReader(ConfigManager configManager)
     private Result ReadRegularDaltonData()
     {
         string gpu001Path = configManager.GetConfigValue(ConfigIdentifier.GPU001);
-        string[] lines = File.ReadAllLines(gpu001Path);
-        Timetable = new Timetable(lines.Length);
 
+        string[] lines;
+        try
+        {
+            lines = File.ReadAllLines(gpu001Path);
+        }
+        catch
+        {
+            return Errors.FileError;
+        }
+        
+        Timetable = new Timetable(lines.Length);
         bool showWorkshops = configManager.GetConfigValue(ConfigIdentifier.ShowWorkshops) == "true";
         
         foreach (string line in lines)
@@ -132,7 +141,16 @@ public class SubstitutionReader(ConfigManager configManager)
     private Result ReadSubstitutionData()
     {
         string gpu014Path = configManager.GetConfigValue(ConfigIdentifier.GPU014);
-        string[] lines = File.ReadAllLines(gpu014Path);
+
+        string[] lines;
+        try
+        {
+            lines = File.ReadAllLines(gpu014Path);
+        }
+        catch
+        {
+            return Errors.FileError;
+        }
         
         foreach (string line in lines)
         {

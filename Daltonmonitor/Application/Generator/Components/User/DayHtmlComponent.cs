@@ -50,7 +50,7 @@ public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComp
         foreach (KeyValuePair<int, List<TimetableLessonData>> pair in lessonTimetableLessonDatas)
         {
             PeriodHtmlComponent periodHtmlComponent = new(pair.Value, pair.Key);
-            AddChildrenToComponent(periodHtmlComponent);
+            AddChildToComponent(periodHtmlComponent);
         }
     }
 }
