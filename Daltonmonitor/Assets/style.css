@@ -3,13 +3,15 @@
     --element-color: #90caf9;
     --tag-color: #bbdefb;
     --date-color: #f48c06;
+    --off-day-color: #70e000;
     
     --default-padding: .5rem;
     --border-radius: .75rem;
     
     --border: solid #bbdefb .1rem;
     --border-date: solid #ffba08 .1rem;
-    
+    --border-off: solid #9ef01a .1rem;
+
     --text-color: hsl(0, 0%, 5%);
     --text-color-changed: #c1121f;
 
@@ -198,5 +200,31 @@ main {
             }
         }
 
+    }
+}
+
+.day.off {
+    display: block;
+    height: 100%;
+    h1 {
+        margin-bottom: 1.5rem;
+    }
+    
+    .info {
+        height: calc(100% - 6rem);
+        text-align: center;
+        padding: var(--default-padding);
+        background-color: var(--off-day-color);
+        border-radius: var(--border-radius);
+        border: var(--border-off);
+        box-shadow: var(--shadow-major);
+        display: flex;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 3rem;
+
+        p {
+            align-self: center;
+        }
     }
 }
