@@ -38,10 +38,11 @@ public class ConfigManager
         
         /* Html */
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowWorkshops, "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowVacationDays, "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowVacationDays, "true",
+            "If show vacation days is set to true, vacation days are not skipped but highlighted in a special way. Weekends are always skipped"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.HighlightMentorDalton, "true", 
             "If set to true, dalton lessons with mentors are highlight in a special way"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "2", 
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "5", 
             "the amount of future days that should be baked into the html"));
         
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.SpecialLabel, "SP", 
@@ -56,6 +57,8 @@ public class ConfigManager
         /* Style */
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.StyleSourcePath, "./style.css", 
             "The path to the css file that will be baked into the generated html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.LogoSvgSourcePath, "./logo.svg",
+            "The path to the svg logo file that should be displayed in the top left corner of the html website. Must be an svg"));
         
         InitializeConfigData();
     }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
 using Daltonmonitor.Models.Timetable;
 
@@ -9,15 +10,25 @@ public class MainHtmlComponent(Timetable timetable) : HtmlComponent
 {
     protected override void Initialize()
     {
-        DateTime today = DateTime.UtcNow;
+        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
 
-        DateTime day2 = new(2026, 5, 25);
-        DayHtmlComponent day2HtmlComponent = new(timetable, day2);
-        AddChildrenToComponent(day2HtmlComponent);
-        
-        DateTime day = new(2026, 5, 26);
-        DayHtmlComponent dayHtmlComponent = new(timetable, day);
-        AddChildrenToComponent(dayHtmlComponent);
+        string previewingDaysString =
+            htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.PreviewingDaysCount);
+        int previewingDays = Convert.ToInt32(previewingDaysString);
+        int outstandingDays = previewingDays;
+
+        DateTime currentDate = DateTime.Now;
+        while (outstandingDays > 0)
+        {
+            if (currentDate.DayOfWeek != DayOfWeek.Saturday && currentDate.DayOfWeek != DayOfWeek.Sunday)
+            {
+                DayHtmlComponent dayHtmlComponent = new(timetable, currentDate);
+                AddChildrenToComponent(dayHtmlComponent);
+                outstandingDays--;
+            }
+            
+            currentDate = currentDate.AddDays(1);
+        }
     }
     
     public override string GenerateHtml()

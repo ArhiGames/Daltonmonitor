@@ -112,6 +112,7 @@ public class SubstitutionReader(ConfigManager configManager)
             TimetableLessonData? existingTimetableLessonData = Timetable.TimetableLessonDatas.FirstOrDefault(tld =>
                 tld.LessonId == lessonId &&
                 tld.DaltonType == daltonType &&
+                tld.Teachers == teachers &&
                 tld.Day == day &&
                 tld.Lesson == lesson);
             if (existingTimetableLessonData is null)

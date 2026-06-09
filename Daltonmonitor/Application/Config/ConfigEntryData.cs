@@ -27,7 +27,8 @@ public enum ConfigIdentifier
     BoundDaltonLabel,
     MentorLabel,
     
-    StyleSourcePath
+    StyleSourcePath,
+    LogoSvgSourcePath
 }
 
 public class ConfigEntryData(string category, ConfigIdentifier identifier, string defaultValue, string? comment = null)

@@ -36,7 +36,7 @@ header {
     margin: 0 auto 1rem auto;
     width: var(--effective-page-width);
 
-    img {
+    .logo {
         width: 8rem;
     }
 
@@ -92,7 +92,7 @@ main {
     header {
         grid-template-columns: 1fr;
         grid-template-rows: repeat(2, auto);
-        img {
+        .logo {
             display: none;
         }
 
