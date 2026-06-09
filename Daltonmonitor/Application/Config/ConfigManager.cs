@@ -33,6 +33,8 @@ public class ConfigManager
             "M5A,M5B,M5C,M5D,M6A,M6B,M6C,M6D,M7A,M7B,M7C,M7D,M8A,M8B,M8C,M8D,M9A,M9B,M9C,M9D,M10A,M10B,M10C,M10D,MEF,MQ1,MQ2"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorPattern, "M{Class}",
             "The pattern to extract the class to show from the mentor identifiers, e. g. M{Class} when the mentor identifier is like M5A"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.BoundDaltonLessonPattern, "geb.{Information}",
+            "The pattern to extract bound dalton lesson information to show on the website. {Information} will be data shown in the app. Must be in the row 'Text for processing'"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.FloorCount, "4", 
             "The amount of floors that should be baked into the html"));
         

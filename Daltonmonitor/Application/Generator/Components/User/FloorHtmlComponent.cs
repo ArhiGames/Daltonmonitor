@@ -14,6 +14,7 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
     {
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
         
+        // todo consider overriding dalton types too
         List<TimetableLessonData> orderedLessons = timetableLessonDatas
             .OrderBy(tld => DoesDaltonTypeShowTag(htmlRootComponent.ConfigManager, tld.DaltonType))
             .ThenBy(tld => tld.Rooms[0].RoomId)
@@ -48,6 +49,7 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
             DaltonType.None or DaltonType.Dalton => ConfigIdentifier.None,
             DaltonType.Workshop => ConfigIdentifier.WorkshopLabel,
             DaltonType.Mentor => ConfigIdentifier.MentorLabel,
+            DaltonType.Bound => ConfigIdentifier.BoundDaltonLabel,
             _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
         };
 

@@ -86,7 +86,7 @@ public class SubstitutionReader(ConfigManager configManager)
             string[] lineContents = line.Replace('"', ' ').EnhancedSplit(',');
 
             List<Class> classes = [];
-            
+
             DaltonType daltonType = GetDaltonType(lineContents[3]);
             switch (daltonType)
             {
@@ -156,10 +156,19 @@ public class SubstitutionReader(ConfigManager configManager)
         {
             string[] lineContents = line.Replace('"', ' ').EnhancedSplit(',');
 
-            DaltonType daltonType = GetDaltonType(lineContents[7]);
-            if (daltonType == DaltonType.None)
+            DaltonType overrideDaltonType = GetDaltonType(lineContents[7]);
+            if (overrideDaltonType == DaltonType.None)
             {
                 continue;
+            }
+            
+            // Bound dalton lessons can't be checked using GetDaltonType, as it requires another lineContents
+            string? additionalInformation = null;
+            Result<string> boundDaltonLessonResult = IsBoundDaltonLesson(lineContents[16]);
+            if (boundDaltonLessonResult.IsSuccess)
+            {
+                overrideDaltonType = DaltonType.Bound;
+                additionalInformation = boundDaltonLessonResult.Value;
             }
 
             int substitutionId = Convert.ToInt32(lineContents[0]);
@@ -175,7 +184,7 @@ public class SubstitutionReader(ConfigManager configManager)
             SubstitutionType substitutionType = GetSubstitutionType(lineContents[19]);
 
             SubstitutionData substitutionData = new(substitutionId, dateTime, lesson, substituteTeacher,
-                substituteRooms, substitutionFlags, substitutionType);
+                substituteRooms, overrideDaltonType, substitutionFlags, substitutionType, additionalInformation);
 
             TimetableLessonData? timetableLessonData =
                 Timetable!.TimetableLessonDatas.FirstOrDefault(tld => tld.LessonId == lessonId &&
@@ -202,26 +211,51 @@ public class SubstitutionReader(ConfigManager configManager)
         }
 
         string[] mentorIdentifiers = configManager.GetConfigAsList(ConfigIdentifier.MentorIdentifiers);
-        return mentorIdentifiers.Contains(identifier) ? DaltonType.Mentor : DaltonType.None;
+        if (mentorIdentifiers.Contains(identifier))
+        {
+            return DaltonType.Mentor;
+        }
+        
+        return DaltonType.None;
+    }
+
+    private Result<string> IsBoundDaltonLesson(string value)
+    {
+        string typedStringTemplate = configManager.GetConfigValue(ConfigIdentifier.BoundDaltonLessonPattern);
+        const string templateString = "{Information}";
+        int indexOfOpening = typedStringTemplate.IndexOf(templateString, StringComparison.Ordinal);
+        if (indexOfOpening == -1)
+        {
+            return Errors.Unknown;
+        }
+        int indexOfClosing = indexOfOpening + templateString.Length;
+        
+        string first = typedStringTemplate[..indexOfOpening];
+        string last = typedStringTemplate[indexOfClosing..];
+
+        if (!value.Contains(first) || !value.Contains(last))
+        {
+            return Errors.Unknown;
+        }
+        
+        if (first != string.Empty) value = value.Replace(first, "");
+        if (last != string.Empty) value = value.Replace(last, "");
+        return value;
     }
 
     private Result<string> GetTypedMentorClassIdentifier(string value)
     {
         string typedStringTemplate = configManager.GetConfigValue(ConfigIdentifier.MentorPattern);
-        int indexOfOpening = typedStringTemplate.IndexOf('{');
+        const string templateString = "{Class}";
+        int indexOfOpening = typedStringTemplate.IndexOf(templateString, StringComparison.Ordinal);
         if (indexOfOpening == -1)
         {
             return Errors.Unknown;
         }
-        
-        int indexOfClosing = typedStringTemplate.IndexOf('}');
-        if (indexOfClosing == -1)
-        {
-            return Errors.Unknown;
-        }
+        int indexOfClosing = indexOfOpening + templateString.Length;
         
         string first = typedStringTemplate[..indexOfOpening];
-        string last = typedStringTemplate[(indexOfClosing + 1)..];
+        string last = typedStringTemplate[indexOfClosing..];
 
         if (first != string.Empty) value = value.Replace(first, "");
         if (last != string.Empty) value = value.Replace(last, "");

@@ -22,27 +22,10 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
 
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
         DayHtmlComponent dayHtmlComponent = GetOuter<DayHtmlComponent>()!;
-        
-        switch (timetableLessonData.DaltonType)
-        {
-            case DaltonType.None:
-            case DaltonType.Dalton:
-                break;
-            case DaltonType.Workshop:
-            {
-                LabelHtmlComponent labelHtmlComponent = new(LabelType.Workshop);
-                AddChildToComponent(labelHtmlComponent);
-                break;
-            }
-            case DaltonType.Mentor:
-            {
-                LabelHtmlComponent labelHtmlComponent = new(LabelType.Mentor);
-                AddChildToComponent(labelHtmlComponent);
-                break;
-            }
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+
+        // The dalton type might change due to substitution, as so, the relevant dalton type stands for the relevant dalton type
+        DaltonType relevantDaltonType = timetableLessonData.DaltonType;
+        string? additionalInformation = null;
         
         foreach (SubstitutionData substitutionData in timetableLessonData.SubstitutionDatas)
         {
@@ -67,7 +50,38 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
                 substituteTeacherIdentifierHtmlComponent = 
                     new IdentifierHtmlComponent(IdentifierType.Teacher, substitutionData.SubstituteTeacher!.TeacherName, true);
             }
+
+            relevantDaltonType = substitutionData.OverrideDaltonType ?? relevantDaltonType;
+            additionalInformation = substitutionData.AdditionalInformation;
+            
             break;
+        }
+        
+        switch (relevantDaltonType)
+        {
+            case DaltonType.None:
+            case DaltonType.Dalton:
+                break;
+            case DaltonType.Workshop:
+            {
+                LabelHtmlComponent labelHtmlComponent = new(LabelType.Workshop);
+                AddChildToComponent(labelHtmlComponent);
+                break;
+            }
+            case DaltonType.Mentor:
+            {
+                LabelHtmlComponent labelHtmlComponent = new(LabelType.Mentor);
+                AddChildToComponent(labelHtmlComponent);
+                break;
+            }
+            case DaltonType.Bound:
+            {
+                LabelHtmlComponent labelHtmlComponent = new(LabelType.Bound);
+                AddChildToComponent(labelHtmlComponent);
+                break;
+            }
+            default:
+                throw new ArgumentOutOfRangeException();
         }
         
         IdentifierHtmlComponent roomIdentifierHtmlComponent = new(IdentifierType.Room, room.RoomId, _isCancelled);
@@ -89,7 +103,7 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
 
         bool highlightMentorLesson =
             htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.HighlightMentorDalton) == "true";
-        if (timetableLessonData.DaltonType == DaltonType.Mentor && highlightMentorLesson)
+        if (relevantDaltonType == DaltonType.Mentor && highlightMentorLesson)
         {
             Class? classData = timetableLessonData.Classes.Count > 0 ? timetableLessonData.Classes[0] : null;
             if (classData is not null)
@@ -98,7 +112,14 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
                     new(MetadataType.Mentor, classData.ClassDescriptor);
                 AddChildToComponent(metaLessonInfoHtmlComponent);
             }
-        } 
+        }
+
+        if (additionalInformation is not null)
+        {
+            MetaLessonInfoHtmlComponent metaLessonInfoHtmlComponent =
+                new(MetadataType.Information, additionalInformation);
+            AddChildToComponent(metaLessonInfoHtmlComponent);
+        }
     }
     
     public override string GenerateHtml()

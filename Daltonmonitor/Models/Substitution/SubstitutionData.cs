@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Daltonmonitor.Models.Timetable;
 using Daltonmonitor.Models.Types;
 
 namespace Daltonmonitor.Models.Substitution;
 
 public class SubstitutionData(int substitutionId, DateTime dateTime, int lesson, Teacher substituteTeacher, 
-    List<Room> substituteRooms, SubstitutionFlags substitutionFlags, SubstitutionType substitutionType)
+    List<Room> substituteRooms, DaltonType? overrideDaltonType, SubstitutionFlags substitutionFlags, SubstitutionType substitutionType,
+    string? additionalInformation)
 {
     public int SubstitutionId { get; init; } = substitutionId;
 
@@ -17,7 +19,11 @@ public class SubstitutionData(int substitutionId, DateTime dateTime, int lesson,
 
     public List<Room>? SubstituteRooms { get; init; } = substituteRooms;
 
+    public DaltonType? OverrideDaltonType { get; init; } = overrideDaltonType;
+
     public SubstitutionFlags SubstitutionFlags { get; init; } = substitutionFlags;
 
     public SubstitutionType SubstitutionType { get; init; } = substitutionType;
+
+    public string? AdditionalInformation { get; init; } = additionalInformation;
 }

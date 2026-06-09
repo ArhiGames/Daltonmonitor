@@ -5,5 +5,6 @@ public enum DaltonType
     None = 0,
     Dalton,
     Workshop,
-    Mentor
+    Mentor,
+    Bound
 }

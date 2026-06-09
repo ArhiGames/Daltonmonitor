@@ -16,6 +16,7 @@ public enum ConfigIdentifier
     WorkshopIdentifiers,
     MentorIdentifiers,
     MentorPattern,
+    BoundDaltonLessonPattern,
     FloorCount,
     
     ShowWorkshops,
