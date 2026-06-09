@@ -182,13 +182,7 @@ main {
                 text-decoration: line-through;
                 color: var(--text-color-changed);
             }
-            .lesson:has(.tag) {
-                order: 100;
-            }
-            .lesson:not(:has(.tag)) ~ .lesson {
-                border-top: var(--border);
-            }
-            .lesson:has(.tag) {
+            .lesson + .lesson {
                 border-top: var(--border);
             }
 
