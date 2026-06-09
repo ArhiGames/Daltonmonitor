@@ -29,7 +29,15 @@ public enum ConfigIdentifier
     MentorLabel,
     
     StyleSourcePath,
-    LogoSvgSourcePath
+    LogoSvgSourcePath,
+    
+    BackgroundColor,
+    ElementColor,
+    TagColor,
+    DateColor,
+    OffDayColor,
+    TextColor,
+    
 }
 
 public class ConfigEntryData(string category, ConfigIdentifier identifier, string defaultValue, string? comment = null)
