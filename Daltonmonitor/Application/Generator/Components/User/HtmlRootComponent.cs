@@ -30,7 +30,7 @@ public class HtmlRootComponent : HtmlComponent
     
     public override string GenerateHtml()
     {
-        string applicationName = ConfigManager.GetConfigValue(ConfigType.ApplicationName);
+        string applicationName = ConfigManager.GetConfigValue(ConfigIdentifier.ApplicationName);
         string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=\"UTF-8\"><title>{applicationName}</title><link rel=\"icon\" type=\"image/x-icon\" href=\"Icon.png\"></head>";
         string htmlStyle = $"<style>{GetCssString()}</style>";
         const string htmlBack = "</body></html>";
@@ -50,7 +50,7 @@ public class HtmlRootComponent : HtmlComponent
     
     private string GetCssString()
     {
-        string cssPath = ConfigManager.GetConfigValue(ConfigType.StyleSourcePath);
+        string cssPath = ConfigManager.GetConfigValue(ConfigIdentifier.StyleSourcePath);
         string css = File.ReadAllText(cssPath);
         return css.Replace("\n", "").Replace("    ", "");
     }

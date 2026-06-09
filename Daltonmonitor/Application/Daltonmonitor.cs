@@ -39,7 +39,7 @@ public class Daltonmonitor
         StopScanningLogic();
         Process();
 
-        int scanIntervalSeconds = Convert.ToInt32(ConfigManager.GetConfigValue(ConfigType.CheckInterval));
+        int scanIntervalSeconds = Convert.ToInt32(ConfigManager.GetConfigValue(ConfigIdentifier.CheckInterval));
         _cancellationTokenSource = new CancellationTokenSource();
         _periodicTimer = new PeriodicTimer(TimeSpan.FromSeconds(scanIntervalSeconds));
 
@@ -88,7 +88,7 @@ public class Daltonmonitor
         Timetable timetable = timetableResult.Value!;
         string htmlStructure = HtmlGenerator.GenerateHtmlStructure(timetable);
 
-        string outputFile = ConfigManager.GetConfigValue(ConfigType.OutputPath);
+        string outputFile = ConfigManager.GetConfigValue(ConfigIdentifier.OutputPath);
         File.WriteAllText(outputFile, htmlStructure);
     }
 }

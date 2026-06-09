@@ -6,11 +6,13 @@ using Daltonmonitor.Models.Types.Common.Result;
 
 namespace Daltonmonitor.Models.Timetable;
 
-public class TimetableLessonData(int lessonId, DaltonType daltonType, List<Teacher> teachers, List<Room> rooms, DayOfWeek day, int lesson)
+public class TimetableLessonData(int lessonId, DaltonType daltonType, List<Class> classes, List<Teacher> teachers, List<Room> rooms, DayOfWeek day, int lesson)
 {
     public int LessonId { get; init; } = lessonId;
 
     public DaltonType DaltonType { get; init; } = daltonType;
+
+    public List<Class> Classes { get; init; } = classes;
 
     public List<Teacher> Teachers { get; init; } = teachers;
 

@@ -15,7 +15,7 @@ public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComp
     public override string GenerateHtml()
     {
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
-        int floorCount = Convert.ToInt32(htmlRootComponent.ConfigManager.GetConfigValue(ConfigType.FloorCount));
+        int floorCount = Convert.ToInt32(htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.FloorCount));
         
         string dataDateTimeString = DateTime.ToString("yyyyMMdd");
         string htmlHead = $"<div class=\"day\" data-date={dataDateTimeString} style=\"--floor-count: {floorCount};\">";

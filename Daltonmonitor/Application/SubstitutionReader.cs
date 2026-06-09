@@ -8,6 +8,7 @@ using Daltonmonitor.Mappers;
 using Daltonmonitor.Models.Substitution;
 using Daltonmonitor.Models.Timetable;
 using Daltonmonitor.Models.Types;
+using Daltonmonitor.Models.Types.Common.Errors;
 using Daltonmonitor.Models.Types.Common.Result;
 
 namespace Daltonmonitor.Application;
@@ -30,27 +31,36 @@ public class SubstitutionReader(ConfigManager configManager)
 
     private Result ReadRegularDaltonData()
     {
-        string gpu001Path = configManager.GetConfigValue(ConfigType.GPU001);
+        string gpu001Path = configManager.GetConfigValue(ConfigIdentifier.GPU001);
         string[] lines = File.ReadAllLines(gpu001Path);
         Timetable = new Timetable(lines.Length);
 
-        bool showWorkshops = configManager.GetConfigValue(ConfigType.ShowWorkshops) == "true";
+        bool showWorkshops = configManager.GetConfigValue(ConfigIdentifier.ShowWorkshops) == "true";
         
         foreach (string line in lines)
         {
             string[] lineContents = line.Replace('"', ' ').EnhancedSplit(',');
 
+            List<Class> classes = [];
+            
             DaltonType daltonType = GetDaltonType(lineContents[3]);
             switch (daltonType)
             {
                 case DaltonType.None:
                     continue;
+                case DaltonType.Dalton:
+                    break;
                 case DaltonType.Workshop:
                     if (!showWorkshops) continue;
                     break;
-                case DaltonType.Dalton:
                 case DaltonType.Mentor:
+                {
+                    Result<string> parseMentorClassResult = GetTypedMentorClassIdentifier(lineContents[3]);
+                    if (!parseMentorClassResult.IsSuccess) break;
+                    
+                    classes.Add(new Class(parseMentorClassResult.Value!));
                     break;
+                }
                 default:
                     throw new ArgumentOutOfRangeException();
             }
@@ -71,7 +81,7 @@ public class SubstitutionReader(ConfigManager configManager)
                 tld.Lesson == lesson);
             if (existingTimetableLessonData is null)
             {
-                TimetableLessonData timetableLessonData = new(lessonId, daltonType, teachers, rooms, day, lesson);
+                TimetableLessonData timetableLessonData = new(lessonId, daltonType, classes, teachers, rooms, day, lesson);
                 Timetable.AddDaltonLesson(timetableLessonData);
             }
             else
@@ -85,7 +95,7 @@ public class SubstitutionReader(ConfigManager configManager)
 
     private Result ReadSubstitutionData()
     {
-        string gpu014Path = configManager.GetConfigValue(ConfigType.GPU014);
+        string gpu014Path = configManager.GetConfigValue(ConfigIdentifier.GPU014);
         string[] lines = File.ReadAllLines(gpu014Path);
         
         foreach (string line in lines)
@@ -125,16 +135,46 @@ public class SubstitutionReader(ConfigManager configManager)
 
     private DaltonType GetDaltonType(string identifier)
     {
-        string[] daltonIdentifiers = configManager.GetConfigAsList(ConfigType.DaltonIdentifiers);
+        string[] daltonIdentifiers = configManager.GetConfigAsList(ConfigIdentifier.DaltonIdentifiers);
         if (daltonIdentifiers.Contains(identifier))
         {
             return DaltonType.Dalton;
         }
         
-        string[] workshopIdentifiers = configManager.GetConfigAsList(ConfigType.WorkshopIdentifiers);
-        return workshopIdentifiers.Contains(identifier) ? DaltonType.Workshop : DaltonType.None;
+        string[] workshopIdentifiers = configManager.GetConfigAsList(ConfigIdentifier.WorkshopIdentifiers);
+        if (workshopIdentifiers.Contains(identifier))
+        {
+            return DaltonType.Workshop;
+        }
+
+        string[] mentorIdentifiers = configManager.GetConfigAsList(ConfigIdentifier.MentorIdentifiers);
+        return mentorIdentifiers.Contains(identifier) ? DaltonType.Mentor : DaltonType.None;
     }
 
+    private Result<string> GetTypedMentorClassIdentifier(string value)
+    {
+        string typedStringTemplate = configManager.GetConfigValue(ConfigIdentifier.MentorPattern);
+        int indexOfOpening = typedStringTemplate.IndexOf('{');
+        if (indexOfOpening == -1)
+        {
+            return Errors.Unknown;
+        }
+        
+        int indexOfClosing = typedStringTemplate.IndexOf('}');
+        if (indexOfClosing == -1)
+        {
+            return Errors.Unknown;
+        }
+        
+        string first = typedStringTemplate[..indexOfOpening];
+        string last = typedStringTemplate[(indexOfClosing + 1)..];
+
+        if (first != string.Empty) value = value.Replace(first, "");
+        if (last != string.Empty) value = value.Replace(last, "");
+
+        return value;
+    }
+    
     private static SubstitutionType GetSubstitutionType(string identifier)
     {
         return identifier switch

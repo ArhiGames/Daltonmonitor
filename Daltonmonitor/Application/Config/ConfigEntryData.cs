@@ -1,6 +1,6 @@
 ﻿namespace Daltonmonitor.Application.Config;
 
-public enum ConfigType
+public enum ConfigIdentifier
 {
     None = 0,
     GPU001,
@@ -14,11 +14,12 @@ public enum ConfigType
     DaltonIdentifiers,
     WorkshopIdentifiers,
     MentorIdentifiers,
+    MentorPattern,
     FloorCount,
     
     ShowWorkshops,
     ShowVacationDays,
-    ShowLabels,
+    HighlightMentorDalton,
     PreviewingDaysCount,
     SpecialLabel,
     WorkshopLabel,
@@ -28,11 +29,11 @@ public enum ConfigType
     StyleSourcePath
 }
 
-public class ConfigEntryData(string category, ConfigType identifier, string defaultValue, string? comment = null)
+public class ConfigEntryData(string category, ConfigIdentifier identifier, string defaultValue, string? comment = null)
 {
     public string Category { get; init; } = category;
 
-    public ConfigType Identifier { get; init; } = identifier;
+    public ConfigIdentifier Identifier { get; init; } = identifier;
 
     public string? Comment { get; init; } = comment;
 

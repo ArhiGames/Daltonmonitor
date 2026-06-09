@@ -14,46 +14,58 @@ public class ConfigManager
     public ConfigManager()
     {
         /* Paths */
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.GPU001, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.GPU014, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.GPU018, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigType.OutputPath, "./output.html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU001, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU014, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU018, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.OutputPath, "./output.html"));
         
         /* Runtime */
-        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigType.CheckInterval, "30", "check interval in seconds"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.CheckInterval, "30", 
+            "check interval in seconds"));
         
         /* Data */
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.ApplicationName, "Daltonmonitor"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.DaltonIdentifiers, "DAL"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.WorkshopIdentifiers, "DAL+"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.MentorIdentifiers, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigType.FloorCount, "4", "The amount of floors that should be baked into the html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.ApplicationName, "Daltonmonitor"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DaltonIdentifiers, "DAL"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.WorkshopIdentifiers, "DAL+"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorIdentifiers,
+            "M5A,M5B,M5C,M5D,M6A,M6B,M6C,M6D,M7A,M7B,M7C,M7D,M8A,M8B,M8C,M8D,M9A,M9B,M9C,M9D,M10A,M10B,M10C,M10D,MEF,MQ1,MQ2"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorPattern, "M{Class}",
+            "The pattern to extract the class to show from the mentor identifiers, e. g. M{Class} when the mentor identifier is like M5A"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.FloorCount, "4", 
+            "The amount of floors that should be baked into the html"));
         
         /* Html */
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowWorkshops, "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowVacationDays, "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.ShowLabels, "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.PreviewingDaysCount, "2", "the amount of future days that should be baked into the html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowWorkshops, "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowVacationDays, "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.HighlightMentorDalton, "true", 
+            "If set to true, dalton lessons with mentors are highlight in a special way"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "2", 
+            "the amount of future days that should be baked into the html"));
         
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.SpecialLabel, "SP", "Will only be used if the dalton lesson doesn't fit any of the predefined tags"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.WorkshopLabel, "WS", "The string that will be baked into a tag if the dalton lesson is a workshop"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.BoundDaltonLabel, "GEB", "The string that will be baked into a tag if the dalton lesson is a bound dalton lesson"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigType.MentorLabel, "MEN", "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.SpecialLabel, "SP", 
+            "Will only be used if the dalton lesson doesn't fit any of the predefined tags. If empty the label isn't shown"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.WorkshopLabel, "WS", 
+            "The string that will be baked into a tag if the dalton lesson is a workshop. If empty the label isn't shown"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.BoundDaltonLabel, "GEB", 
+            "The string that will be baked into a tag if the dalton lesson is a bound dalton lesson. If empty the label isn't shown"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MentorLabel, "MEN", 
+            "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor. If empty the label isn't shown"));
         
         /* Style */
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigType.StyleSourcePath, "./style.css", "The path to the css file that will be baked into the generated html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.StyleSourcePath, "./style.css", 
+            "The path to the css file that will be baked into the generated html"));
         
         InitializeConfigData();
     }
 
-    public string[] GetConfigAsList(ConfigType configType)
+    public string[] GetConfigAsList(ConfigIdentifier configIdentifier)
     {
-        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configType)!.AsList();
+        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.AsList();
     }
     
-    public string GetConfigValue(ConfigType configType)
+    public string GetConfigValue(ConfigIdentifier configIdentifier)
     {
-        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configType)!.CurrentValue;
+        return ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.CurrentValue;
     }
 
     private void InitializeConfigData()
@@ -106,7 +118,7 @@ public class ConfigManager
             }
 
             string identifier = configData[..configData.IndexOf('=')];
-            bool parsedSuccessfully = Enum.TryParse(identifier, false, out ConfigType configType);
+            bool parsedSuccessfully = Enum.TryParse(identifier, false, out ConfigIdentifier configType);
             if (!parsedSuccessfully)
             {
                 continue;

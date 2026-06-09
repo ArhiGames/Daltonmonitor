@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
 using Daltonmonitor.Models.Substitution;
 using Daltonmonitor.Models.Timetable;
@@ -18,8 +19,10 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
 
         IdentifierHtmlComponent? substituteRoomIdentifierHtmlComponent = null;
         IdentifierHtmlComponent? substituteTeacherIdentifierHtmlComponent = null;
-        
+
+        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
         DayHtmlComponent dayHtmlComponent = GetOuter<DayHtmlComponent>()!;
+        
         foreach (SubstitutionData substitutionData in timetableLessonData.SubstitutionDatas)
         {
             if (dayHtmlComponent.DateTime.Day != substitutionData.DateTime.Day)
@@ -83,6 +86,18 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         {
             AddChildrenToComponent(substituteTeacherIdentifierHtmlComponent);
         }
+
+        bool highlightMentorLesson =
+            htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.HighlightMentorDalton) == "true";
+        if (timetableLessonData.DaltonType == DaltonType.Mentor && highlightMentorLesson)
+        {
+            Class? classData = timetableLessonData.Classes.Count > 0 ? timetableLessonData.Classes[0] : null;
+            if (classData is null) return;
+            
+            MetaLessonInfoHtmlComponent metaLessonInfoHtmlComponent =
+                new(MetadataType.Mentor, classData.ClassDescriptor);
+            AddChildrenToComponent(metaLessonInfoHtmlComponent);
+        } 
     }
     
     public override string GenerateHtml()

@@ -11,11 +11,11 @@ public class MainHtmlComponent(Timetable timetable) : HtmlComponent
     {
         DateTime today = DateTime.UtcNow;
 
-        DateTime day2 = new(2026, 5, 28);
+        DateTime day2 = new(2026, 5, 25);
         DayHtmlComponent day2HtmlComponent = new(timetable, day2);
         AddChildrenToComponent(day2HtmlComponent);
         
-        DateTime day = new(2026, 5, 29);
+        DateTime day = new(2026, 5, 26);
         DayHtmlComponent dayHtmlComponent = new(timetable, day);
         AddChildrenToComponent(dayHtmlComponent);
     }
