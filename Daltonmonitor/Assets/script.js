@@ -11,12 +11,14 @@ function checkVisibleDays() {
     const currentDateNumber =  Number(currentDateString)
     console.log(`Current date is: ${currentDateNumber}`)
     
+    let countVisibleDays = 0
     document.querySelectorAll(".day").forEach(day => {
-        if (Number(day.dataset.date) < currentDateNumber) {
+        if (Number(day.dataset.date) < currentDateNumber || countVisibleDays >= 2) {
             day.style.display = "none"
+        } else {
+            countVisibleDays++
         }
     })
-    
 }
 
 function addLeadingZero(number) {
