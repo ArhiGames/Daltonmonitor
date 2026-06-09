@@ -9,6 +9,7 @@ public enum ConfigIdentifier
     OutputPath,
     
     CheckInterval,
+    UserMode,
     
     ApplicationName,
     DaltonIdentifiers,

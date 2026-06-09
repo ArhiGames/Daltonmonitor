@@ -90,5 +90,7 @@ public class Daltonmonitor
 
         string outputFile = ConfigManager.GetConfigValue(ConfigIdentifier.OutputPath);
         File.WriteAllText(outputFile, htmlStructure);
+
+        SubstitutionReader.HandleUserMode();
     }
 }

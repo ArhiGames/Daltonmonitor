@@ -29,6 +29,41 @@ public class SubstitutionReader(ConfigManager configManager)
        return readSubstitutionDataResult.IsSuccess ? Timetable! : readSubstitutionDataResult.Error!;
     }
 
+    public Result HandleUserMode()
+    {
+        string userModeString = configManager.GetConfigValue(ConfigIdentifier.UserMode);
+        switch (userModeString)
+        {
+            case "DEL":
+                DeleteGpuFiles();
+                break;
+            case "KEEP":
+                break;
+            default:
+                return Errors.InvalidUserMode;
+        }
+
+        return Result.Success();
+    }
+
+    private void DeleteGpuFiles()
+    {
+        string gpu001Path = configManager.GetConfigValue(ConfigIdentifier.GPU001);
+        string gpu014Path = configManager.GetConfigValue(ConfigIdentifier.GPU014);
+        string gpu018Path = configManager.GetConfigValue(ConfigIdentifier.GPU018);
+
+        try
+        {
+            File.Delete(gpu001Path);
+            File.Delete(gpu014Path);
+            File.Delete(gpu018Path);
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
     private Result ReadRegularDaltonData()
     {
         string gpu001Path = configManager.GetConfigValue(ConfigIdentifier.GPU001);

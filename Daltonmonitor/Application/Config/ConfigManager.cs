@@ -22,6 +22,8 @@ public class ConfigManager
         /* Runtime */
         ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.CheckInterval, "30", 
             "check interval in seconds"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.UserMode, "KEEP", 
+            "DEL: deletes GPU files after usage. KEEP: keeps GPU files after usage"));
         
         /* Data */
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.ApplicationName, "Daltonmonitor"));
