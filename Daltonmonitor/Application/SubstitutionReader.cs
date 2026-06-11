@@ -83,7 +83,7 @@ public class SubstitutionReader(ConfigManager configManager)
         
         foreach (string line in lines)
         {
-            string[] lineContents = line.Replace('"', ' ').EnhancedSplit(',');
+            string[] lineContents = line.CsvSplit(',');
 
             List<Class> classes = [];
 
@@ -112,7 +112,7 @@ public class SubstitutionReader(ConfigManager configManager)
             int lessonId = Convert.ToInt32(lineContents[0]);
             List<Teacher> teachers = [new(lineContents[2])];
             
-            string[] roomsIdentifiers = lineContents[4].EnhancedSplit('~');
+            string[] roomsIdentifiers = lineContents[4].CsvSplit('~');
             List<Room> rooms = roomsIdentifiers.Select(roomIdentifier => new Room(roomIdentifier)).ToList();
 
             DayOfWeek day = (DayOfWeek)Convert.ToInt32(lineContents[5]);
@@ -154,7 +154,7 @@ public class SubstitutionReader(ConfigManager configManager)
         
         foreach (string line in lines)
         {
-            string[] lineContents = line.Replace('"', ' ').EnhancedSplit(',');
+            string[] lineContents = line.CsvSplit(',');
 
             DaltonType overrideDaltonType = GetDaltonType(lineContents[7]);
             if (overrideDaltonType == DaltonType.None)
@@ -172,12 +172,17 @@ public class SubstitutionReader(ConfigManager configManager)
             }
 
             int substitutionId = Convert.ToInt32(lineContents[0]);
+            if (substitutionId == 11020)
+            {
+                Console.Write("");
+            }
+            
             DateTime dateTime = DateTime.ParseExact(lineContents[1], "yyyyMMdd", CultureInfo.InvariantCulture);
             int lesson = Convert.ToInt32(lineContents[2]);
             int lessonId = Convert.ToInt32(lineContents[4]);
             Teacher substituteTeacher = new(lineContents[6]);
 
-            string[] roomsIdentifiers = lineContents[12].EnhancedSplit('~');
+            string[] roomsIdentifiers = lineContents[12].CsvSplit('~');
             List<Room> substituteRooms = roomsIdentifiers.Select(roomIdentifier => new Room(roomIdentifier)).ToList();
 
             SubstitutionFlags substitutionFlags = (SubstitutionFlags)Convert.ToInt32(lineContents[17]);

@@ -5,22 +5,33 @@ namespace Daltonmonitor.Mappers;
 
 public static class StringMapper
 {
-    public static string[] EnhancedSplit(this string value, char separator, bool ignoreWhitespace = true)
+    public static string[] CsvSplit(this string value, char separator)
     {
         List<string> splits = [];
 
         StringBuilder stringBuilder = new();
+
+        bool isStartingOfWord = true;
+        bool isWordEndedCorrectly = true;
+        
         foreach (char character in value)
         {
-            if (ignoreWhitespace && char.IsWhiteSpace(character))
+            if (character == '"')
             {
+                isWordEndedCorrectly = !isStartingOfWord;
                 continue;
             }
+
+            isStartingOfWord = false;
             
-            if (character == separator)
+            if (character == separator && isWordEndedCorrectly)
             {
                 splits.Add(stringBuilder.ToString());
                 stringBuilder.Clear();
+                
+                isStartingOfWord = true;
+                isWordEndedCorrectly = true;
+                
                 continue;
             }
             stringBuilder.Append(character);
