@@ -14,9 +14,14 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
     
     protected override void Initialize()
     {
-        Room room = timetableLessonData.Rooms[0];
-        Teacher teacher = timetableLessonData.Teachers[0];
-
+        Room? room = timetableLessonData.Rooms.Count > 0 ? timetableLessonData.Rooms[0] : null;
+        Teacher? teacher = timetableLessonData.Teachers.Count > 0 ? timetableLessonData.Teachers[0] : null;
+        if (room is null || teacher is null)
+        {
+            // todo remove from parent
+            return;
+        }
+        
         IdentifierHtmlComponent? substituteRoomIdentifierHtmlComponent = null;
         IdentifierHtmlComponent? substituteTeacherIdentifierHtmlComponent = null;
 
@@ -40,15 +45,24 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
                 break;
             }
 
-            if (room.RoomId != substitutionData.SubstituteRooms![0].RoomId)
+            if (substitutionData.SubstituteRooms is not null && substitutionData.SubstituteRooms.Count > 0)
             {
-                substituteRoomIdentifierHtmlComponent = 
-                    new IdentifierHtmlComponent(IdentifierType.Room, substitutionData.SubstituteRooms![0].RoomId, true);
+                Room substituteRoom = substitutionData.SubstituteRooms[0];
+                if (room.RoomId != substituteRoom.RoomId)
+                {
+                    substituteRoomIdentifierHtmlComponent = 
+                        new IdentifierHtmlComponent(IdentifierType.Room, substituteRoom.RoomId, true);
+                }
             }
-            if (teacher.TeacherName != substitutionData.SubstituteTeacher!.TeacherName)
+
+            if (substitutionData.SubstituteTeacher is not null)
             {
-                substituteTeacherIdentifierHtmlComponent = 
-                    new IdentifierHtmlComponent(IdentifierType.Teacher, substitutionData.SubstituteTeacher!.TeacherName, true);
+                Teacher substituteTeacher = substitutionData.SubstituteTeacher;
+                if (teacher.TeacherName != substituteTeacher.TeacherName)
+                {
+                    substituteTeacherIdentifierHtmlComponent = 
+                        new IdentifierHtmlComponent(IdentifierType.Teacher, substituteTeacher.TeacherName, true);
+                }
             }
 
             relevantDaltonType = substitutionData.OverrideDaltonType ?? relevantDaltonType;

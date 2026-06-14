@@ -56,15 +56,8 @@ public class HtmlRootComponent : HtmlComponent
         string jsPath = ConfigManager.GetConfigValue(ConfigIdentifier.ScriptSourcePath);
         try
         {
-            StringBuilder stringBuilder = new();
-            
-            string[] jsLines = File.ReadAllLines(jsPath);
-            foreach (string jsLine in jsLines)
-            {
-                stringBuilder.Append($"{jsLine.Trim()} ");
-            }
-
-            return stringBuilder.ToString();
+            string js = File.ReadAllText(jsPath);
+            return js;
         }
         catch
         {
