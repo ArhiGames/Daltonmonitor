@@ -28,7 +28,9 @@ public class HeaderHtmlComponent : HtmlComponent
         svgLogoString = svgLogoString.Insert(classStartIndex + 5, "class=\"logo\"");
         string logoHtml = $"{svgLogoString}";
 
-        string lastUpdateHtml = $"<div class=\"last-update\"><div class=\"label\">Stand:</div><div class=\"date\">{_generatedDate.ToLongDateString()}</div><div class=\"time\">{_generatedDate.Hour}:{_generatedDate.Minute}</div></div>";
+        string dateString = $"{_generatedDate.ToLongDateString()}";
+        string timeString = $"{_generatedDate.ToShortTimeString()}";
+        string lastUpdateHtml = $"<div class=\"last-update\"><div class=\"label\">Stand:</div><div class=\"date\">{dateString}</div><div class=\"time\">{timeString}</div></div>";
         
         StringBuilder stringBuilder = new();
         stringBuilder.Append("<header>");

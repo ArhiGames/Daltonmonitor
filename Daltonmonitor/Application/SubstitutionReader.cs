@@ -25,8 +25,8 @@ public class SubstitutionReader(ConfigManager configManager)
            return readDaltonDataResult.Error!;
        }
 
-       Result readSubstitutionDataResult = ReadSubstitutionData();
-       return readSubstitutionDataResult.IsSuccess ? Timetable! : readSubstitutionDataResult.Error!;
+       ReadSubstitutionData();
+       return Timetable!;
     }
 
     public Result HandleUserMode()

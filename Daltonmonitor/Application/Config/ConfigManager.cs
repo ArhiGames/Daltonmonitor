@@ -161,6 +161,11 @@ public class ConfigManager
             }
 
             string value = configData[(configData.IndexOf('=') + 1)..];
+            if (value.StartsWith('"') && value.EndsWith('"'))
+            {
+                configDatas.Add(configType, value.Substring(1, value.Length - 2));
+                continue;
+            }
             configDatas.Add(configType, value);
         }
 
