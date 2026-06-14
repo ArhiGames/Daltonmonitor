@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
@@ -53,39 +54,34 @@ public class HtmlRootComponent : HtmlComponent
         string cssPath = ConfigManager.GetConfigValue(ConfigIdentifier.StyleSourcePath);
         try
         {
+            Dictionary<string, ConfigIdentifier> identifiers = new()
+            {
+                { "--background-color", ConfigIdentifier.BackgroundColor },
+                { "--element-color", ConfigIdentifier.ElementColor },
+                { "--tag-color", ConfigIdentifier.TagColor },
+                { "--date-color", ConfigIdentifier.DateColor },
+                { "--off-day-color", ConfigIdentifier.OffDayColor },
+                { "--text-color", ConfigIdentifier.TextColor }
+            };
+            
             string[] css = File.ReadAllLines(cssPath);
             for (int i = 0; i < css.Length; i++)
             {
-                // todo refactor this logic to use a cool dictionary
-                if (css[i].Trim().StartsWith("--background-color:"))
+                string cssString = css[i].Trim();
+                
+                int index = cssString.IndexOf(':');
+                if (index == -1)
                 {
-                    string configValue = ConfigManager.GetConfigValue(ConfigIdentifier.BackgroundColor);
-                    css[i] = $"--background-color: {configValue};";
+                    continue;
                 }
-                else if (css[i].Trim().StartsWith("--element-color:"))
+
+                string keyString = cssString[..index];
+                
+                bool found = identifiers.TryGetValue(keyString, out ConfigIdentifier configIdentifier);
+                if (found)
                 {
-                    string configValue = ConfigManager.GetConfigValue(ConfigIdentifier.ElementColor);
-                    css[i] = $"--element-color: {configValue};";
-                }
-                else if (css[i].Trim().StartsWith("--tag-color:"))
-                {
-                    string configValue = ConfigManager.GetConfigValue(ConfigIdentifier.TagColor);
-                    css[i] = $"--tag-color: {configValue};";
-                }
-                else if (css[i].Trim().StartsWith("--date-color:"))
-                {
-                    string configValue = ConfigManager.GetConfigValue(ConfigIdentifier.DateColor);
-                    css[i] = $"--date-color: {configValue};";
-                }
-                else if (css[i].Trim().StartsWith("--off-day-color:"))
-                {
-                    string configValue = ConfigManager.GetConfigValue(ConfigIdentifier.OffDayColor);
-                    css[i] = $"--off-day-color: {configValue};";
-                }
-                else if (css[i].Trim().StartsWith("--text-color:"))
-                {
-                    string configValue = ConfigManager.GetConfigValue(ConfigIdentifier.TextColor);
-                    css[i] = $"--text-color: {configValue};";
+                    string configValue = ConfigManager.GetConfigValue(configIdentifier);
+                    css[i] = $"{keyString}:{configValue};";
                 }
             }
 

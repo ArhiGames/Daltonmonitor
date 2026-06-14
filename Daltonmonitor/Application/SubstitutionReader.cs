@@ -172,10 +172,6 @@ public class SubstitutionReader(ConfigManager configManager)
             }
 
             int substitutionId = Convert.ToInt32(lineContents[0]);
-            if (substitutionId == 11020)
-            {
-                Console.Write("");
-            }
             
             DateTime dateTime = DateTime.ParseExact(lineContents[1], "yyyyMMdd", CultureInfo.InvariantCulture);
             int lesson = Convert.ToInt32(lineContents[2]);
