@@ -32,13 +32,15 @@ public class HtmlRootComponent : HtmlComponent
     public override string GenerateHtml()
     {
         string applicationName = ConfigManager.GetConfigValue(ConfigIdentifier.ApplicationName);
-        string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=\"UTF-8\"><title>{applicationName}</title><link rel=\"icon\" type=\"image/x-icon\" href=\"Icon.png\"></head>";
+        string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=\"UTF-8\"><title>{applicationName}</title></head>";
         string htmlStyle = $"<style>{GetCssString()}</style>";
+        string htmlScript = $"<script>{GetJsString()}</script>";
         const string htmlBack = "</body></html>";
 
         StringBuilder stringBuilder = new();
         stringBuilder.Append(htmlHead);
         stringBuilder.Append(htmlStyle);
+        stringBuilder.Append(htmlScript);
         stringBuilder.Append("<body>");
         foreach (HtmlComponent htmlComponent in Children)
         {
@@ -47,6 +49,27 @@ public class HtmlRootComponent : HtmlComponent
         stringBuilder.Append(htmlBack);
 
         return stringBuilder.ToString();
+    }
+
+    private string GetJsString()
+    {
+        string jsPath = ConfigManager.GetConfigValue(ConfigIdentifier.ScriptSourcePath);
+        try
+        {
+            StringBuilder stringBuilder = new();
+            
+            string[] jsLines = File.ReadAllLines(jsPath);
+            foreach (string jsLine in jsLines)
+            {
+                stringBuilder.Append($"{jsLine.Trim()} ");
+            }
+
+            return stringBuilder.ToString();
+        }
+        catch
+        {
+            return "";
+        }
     }
     
     private string GetCssString()

@@ -47,11 +47,11 @@ public class HeaderHtmlComponent : HtmlComponent
 
         try
         {
-            string fileContent = File.ReadAllText(svgLogoPath);
-            int startingIndex = fileContent.IndexOf("<svg", StringComparison.Ordinal);
-            int endIndex = fileContent.IndexOf("</svg>", StringComparison.Ordinal) + 6;
+            string svgLines = File.ReadAllText(svgLogoPath);
+            int startingIndex = svgLines.IndexOf("<svg", StringComparison.Ordinal);
+            int endIndex = svgLines.IndexOf("</svg>", StringComparison.Ordinal) + 6;
 
-            string svgLogoString = fileContent.Substring(startingIndex, endIndex - startingIndex);
+            string svgLogoString = svgLines.Substring(startingIndex, endIndex - startingIndex);
             return svgLogoString;
         }
         catch
