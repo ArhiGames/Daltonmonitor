@@ -18,6 +18,12 @@ public class ConfigManager
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU014, ""));
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU018, ""));
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.OutputPath, "./output.html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.ScriptSourcePath, "./script.js",
+            "The path to the javascript file that will be baked into the generated html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.StyleSourcePath, "./style.css", 
+            "The path to the css file that will be baked into the generated html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.LogoSvgSourcePath, "./logo.svg",
+            "The path to the svg logo file that should be displayed in the top left corner of the html website. Must be an svg"));
         
         /* Runtime */
         ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.CheckInterval, "30", 
@@ -57,11 +63,6 @@ public class ConfigManager
             "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor. If empty the label isn't shown"));
         
         /* Style */
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.StyleSourcePath, "./style.css", 
-            "The path to the css file that will be baked into the generated html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.LogoSvgSourcePath, "./logo.svg",
-            "The path to the svg logo file that should be displayed in the top left corner of the html website. Must be an svg"));
-        
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BackgroundColor, "#00bbff"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.ElementColor, "#90caf9"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TagColor, "#bbdefb"));
@@ -84,24 +85,34 @@ public class ConfigManager
 
     private void InitializeConfigData()
     {
-        if (File.Exists(ConfigPath))
+        try
         {
-            ReadConfigFile();
+            if (File.Exists(ConfigPath))
+            {
+                Dictionary<ConfigIdentifier, string> existingConfigDatas = GetDataFromConfigFile();
+                UpdateConfig(existingConfigDatas);
+
+                ReadConfigFile();
+            }
+            else
+            {
+                UpdateConfig([]);
+            }
         }
-        else
+        catch
         {
-            WriteConfigFile();
+            // ignored
         }
     }
 
-    private void WriteConfigFile()
+    private void UpdateConfig(Dictionary<ConfigIdentifier, string> configDatas)
     {
         Dictionary<string, List<ConfigEntryData>> configEntryDatas = ConfigEntryDatas
             .GroupBy(ced => ced.Category)
             .ToDictionary(
                 group => group.Key,
                 group => group.ToList());
-
+        
         StringBuilder stringBuilder = new();
         foreach (KeyValuePair<string, List<ConfigEntryData>> categoryConfigEntryDatas in configEntryDatas)
         {
@@ -112,7 +123,16 @@ public class ConfigManager
                 {
                     stringBuilder.Append($";{configEntryData.Comment}\n");
                 }
-                stringBuilder.Append($"{configEntryData.Identifier.ToString()}={configEntryData.CurrentValue}\n");
+
+                bool exists = configDatas.TryGetValue(configEntryData.Identifier, out string? existingValue);
+                if (exists)
+                {
+                    stringBuilder.Append($"{configEntryData.Identifier.ToString()}={existingValue}\n");
+                }
+                else
+                {
+                    stringBuilder.Append($"{configEntryData.Identifier.ToString()}={configEntryData.CurrentValue}\n");
+                }
             }
             stringBuilder.Append('\n');
         }
@@ -120,10 +140,12 @@ public class ConfigManager
         File.WriteAllText(ConfigPath, stringBuilder.ToString());
     }
 
-    public void ReadConfigFile()
+    private Dictionary<ConfigIdentifier, string> GetDataFromConfigFile()
     {
+        Dictionary<ConfigIdentifier, string> configDatas = [];
+        configDatas.EnsureCapacity(ConfigEntryDatas.Count);
+        
         string[] configDataLines = File.ReadAllLines(ConfigPath);
-
         foreach (string configData in configDataLines)
         {
             if (configData.StartsWith(';') || configData.StartsWith('[') || configData.IsWhiteSpace())
@@ -137,11 +159,21 @@ public class ConfigManager
             {
                 continue;
             }
-            
+
             string value = configData[(configData.IndexOf('=') + 1)..];
-            
-            ConfigEntryData? configEntryData = ConfigEntryDatas.Find(ced => ced.Identifier == configType);
-            configEntryData?.UpdateCurrentValue(value);
+            configDatas.Add(configType, value);
+        }
+
+        return configDatas;
+    }
+
+    public void ReadConfigFile()
+    {
+        Dictionary<ConfigIdentifier, string> configDatas = GetDataFromConfigFile();
+        foreach (KeyValuePair<ConfigIdentifier, string> configData in configDatas)
+        {
+            ConfigEntryData? configEntryData = ConfigEntryDatas.Find(ced => ced.Identifier == configData.Key);
+            configEntryData?.UpdateCurrentValue(configData.Value);
         }
     }
 }

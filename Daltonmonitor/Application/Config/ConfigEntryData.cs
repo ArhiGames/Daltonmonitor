@@ -7,6 +7,9 @@ public enum ConfigIdentifier
     GPU014,
     GPU018,
     OutputPath,
+    ScriptSourcePath,
+    StyleSourcePath,
+    LogoSvgSourcePath,
     
     CheckInterval,
     UserMode,
@@ -27,9 +30,6 @@ public enum ConfigIdentifier
     WorkshopLabel,
     BoundDaltonLabel,
     MentorLabel,
-    
-    StyleSourcePath,
-    LogoSvgSourcePath,
     
     BackgroundColor,
     ElementColor,

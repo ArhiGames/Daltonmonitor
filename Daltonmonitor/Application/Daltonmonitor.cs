@@ -89,7 +89,14 @@ public class Daltonmonitor
         string htmlStructure = HtmlGenerator.GenerateHtmlStructure(timetable);
 
         string outputFile = ConfigManager.GetConfigValue(ConfigIdentifier.OutputPath);
-        File.WriteAllText(outputFile, htmlStructure);
+        try
+        {
+            File.WriteAllText(outputFile, htmlStructure);
+        }
+        catch
+        {
+            // ignored
+        }
 
         SubstitutionReader.HandleUserMode();
     }
