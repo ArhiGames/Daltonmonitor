@@ -34,7 +34,7 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         
         foreach (SubstitutionData substitutionData in timetableLessonData.SubstitutionDatas)
         {
-            if (dayHtmlComponent.DateTime.Day != substitutionData.DateTime.Day)
+            if (dayHtmlComponent.DateTime.Date != substitutionData.DateTime.Date)
             {
                 continue;
             }
