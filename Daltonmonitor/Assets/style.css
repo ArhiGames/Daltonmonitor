@@ -15,6 +15,7 @@
 
     --text-color: #0d0d0d;
     --text-color-changed: #c1121f;
+    --lesson-text-size: .9rem;
 
     --shadow-major: 0 8px 8px 0 rgba(0,0,0,.2);
     --shadow-minor: 0 4px 4px 0 rgba(0,0,0,.2);
@@ -74,7 +75,7 @@ main {
     margin: auto;
     gap: 4rem 2rem;
 }
-@media only screen and (max-width: 1100px) {
+@media only screen and (max-width: 1200px) {
     :root {
         --effective-page-width: 95vw;
     }
@@ -83,6 +84,13 @@ main {
     }
     div.day {
         width: 100%;
+        gap: .5rem ;
+    }
+    header {
+        margin-bottom: 1rem;
+    }
+    .period {
+        grid-row-gap: .5rem;
     }
 }
 @media only screen and (max-width: 800px) {
@@ -136,7 +144,7 @@ main {
         grid-column: 1 / -1;
         text-align: center;
         margin: 0;
-        font-size: 1.4rem;
+        font-size: calc(var(--lesson-text-size) * 1.5);
     }
     h1.date {
         margin-bottom: .1rem;
@@ -169,7 +177,7 @@ main {
                 padding: var(--padding) 0;
                 align-items: center;
                 border-bottom: none;
-                font-size: .95rem;
+                font-size: var(--lesson-text-size);
                 flex-wrap: wrap;
             }
 
