@@ -38,6 +38,7 @@ header {
     align-items: center;
     margin: 0 auto;
     width: var(--effective-page-width);
+    gap: 3rem;
 
     .logo {
         width: 5rem;
@@ -56,16 +57,17 @@ header {
         background-color: var(--element-color);
         border: var(--border);
         box-shadow: var(--shadow-major);
+        align-items: center;
         
         display: flex;
-        gap: .1rem;
+        gap: .25rem;
         flex-wrap: wrap;
-        
-        div {
-            margin: .25rem;
-            text-align: center;
-        }
+        font-size: 1.1rem;
     }
+}
+
+body.single-day main {
+    grid-template-columns: 1fr;
 }
 
 main {
@@ -89,8 +91,8 @@ main {
     header {
         margin-bottom: 1rem;
     }
-    .period {
-        grid-row-gap: .5rem;
+    .day div.period {
+        grid-row-gap: .75rem;
     }
 }
 @media only screen and (max-width: 800px) {
