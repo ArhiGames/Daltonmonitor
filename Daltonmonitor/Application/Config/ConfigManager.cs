@@ -65,10 +65,16 @@ public class ConfigManager
         /* Style */
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BackgroundColor, "#00bbff"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.ElementColor, "#90caf9"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColor, "#bbdefb"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TagColor, "#bbdefb"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.DateColor, "#f48c06"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColorDate, "#ffba08"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.OffDayColor, "#70e000"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColorOffDay, "#9ef01a"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TextColor, "#0d0d0d"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TextColorSubstitution, "#c1121f"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.LessonTextSize, "0.9rem"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderSize, "0.1rem"));
         
         InitializeConfigData();
     }

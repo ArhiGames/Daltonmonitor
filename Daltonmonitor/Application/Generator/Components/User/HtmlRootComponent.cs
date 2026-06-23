@@ -77,7 +77,16 @@ public class HtmlRootComponent : HtmlComponent
                 { "--tag-color", ConfigIdentifier.TagColor },
                 { "--date-color", ConfigIdentifier.DateColor },
                 { "--off-day-color", ConfigIdentifier.OffDayColor },
-                { "--text-color", ConfigIdentifier.TextColor }
+                { "--text-color", ConfigIdentifier.TextColor },
+                { "--text-color-changed", ConfigIdentifier.TextColorSubstitution },
+                { "--lesson-text-size", ConfigIdentifier.LessonTextSize }
+            };
+
+            Dictionary<string, ConfigIdentifier> borderColorIdentifiers = new()
+            {
+                { "--border", ConfigIdentifier.BorderColor },
+                { "--border-date", ConfigIdentifier.BorderColorDate },
+                { "--border-off", ConfigIdentifier.BorderColorOffDay },
             };
             
             string[] css = File.ReadAllLines(cssPath);
@@ -98,8 +107,17 @@ public class HtmlRootComponent : HtmlComponent
                 {
                     string configValue = ConfigManager.GetConfigValue(configIdentifier);
                     css[i] = $"{keyString}:{configValue};";
+                    continue;
                 }
-            }
+
+                found = borderColorIdentifiers.TryGetValue(keyString, out configIdentifier);
+                if (found)
+                {
+                    string borderSize = ConfigManager.GetConfigValue(ConfigIdentifier.BorderSize);
+                    string configValue = ConfigManager.GetConfigValue(configIdentifier);
+                    css[i] = $"{keyString}:solid {configValue} {borderSize};";
+                }
+            } 
 
             StringBuilder finalCss = new();
             foreach (string line in css)

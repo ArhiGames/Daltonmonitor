@@ -33,11 +33,16 @@ public enum ConfigIdentifier
     
     BackgroundColor,
     ElementColor,
+    BorderColor,
     TagColor,
     DateColor,
+    BorderColorDate,
     OffDayColor,
+    BorderColorOffDay,
     TextColor,
-    
+    TextColorSubstitution,
+    LessonTextSize,
+    BorderSize
 }
 
 public class ConfigEntryData(string category, ConfigIdentifier identifier, string defaultValue, string? comment = null)
