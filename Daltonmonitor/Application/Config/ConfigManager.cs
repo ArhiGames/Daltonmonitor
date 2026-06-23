@@ -62,6 +62,13 @@ public class ConfigManager
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MentorLabel, "", 
             "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor. If empty the label isn't shown"));
         
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderWorkshopsWithLabelToBottom, "true",
+            "If this is set to true, dalton lessons (with a label in front of it) that are workshops are always displayed at the bottom"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderMentorDaltonWithLabelToBottom, "",
+            "If this is set to true, dalton lessons (with a label in front of it) that are mentor dalton lessons are always displayed at the bottom"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderBoundDaltonWithLabelToBottom, "",
+            "If this is set to true, dalton lessons (with a label in front of it) that are bound dalton lessons are always displayed at the bottom"));
+        
         /* Style */
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BackgroundColor, "#00bbff"));
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.ElementColor, "#90caf9"));

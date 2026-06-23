@@ -16,7 +16,8 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
         
         // todo consider overriding dalton types too
         List<TimetableLessonData> orderedLessons = timetableLessonDatas
-            .OrderBy(tld => DoesDaltonTypeShowTag(htmlRootComponent.ConfigManager, tld.DaltonType))
+            .OrderBy(tld => DoesDaltonTypeShowTag(htmlRootComponent.ConfigManager, tld.DaltonType) && 
+                            ShouldReordererDaltonLesson(htmlRootComponent.ConfigManager, tld.DaltonType))
             .ThenBy(tld => tld.Rooms[0].RoomId)
             .ToList();
         
@@ -55,5 +56,18 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
 
         bool shouldShowTag = configManager.GetConfigValue(configIdentifier) != string.Empty;
         return shouldShowTag;
+    }
+
+    private bool ShouldReordererDaltonLesson(ConfigManager configManager, DaltonType daltonType)
+    {
+        return daltonType switch
+        {
+            DaltonType.None => false,
+            DaltonType.Dalton => false,
+            DaltonType.Workshop => configManager.GetConfigValue(ConfigIdentifier.ReorderWorkshopsWithLabelToBottom) == "true",
+            DaltonType.Mentor => configManager.GetConfigValue(ConfigIdentifier.ReorderMentorDaltonWithLabelToBottom) == "true",
+            DaltonType.Bound => configManager.GetConfigValue(ConfigIdentifier.ReorderBoundDaltonWithLabelToBottom) == "true",
+            _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
+        };
     }
 }

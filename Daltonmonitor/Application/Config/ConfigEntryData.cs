@@ -30,6 +30,9 @@ public enum ConfigIdentifier
     WorkshopLabel,
     BoundDaltonLabel,
     MentorLabel,
+    ReorderWorkshopsWithLabelToBottom,
+    ReorderMentorDaltonWithLabelToBottom,
+    ReorderBoundDaltonWithLabelToBottom,
     
     BackgroundColor,
     ElementColor,
