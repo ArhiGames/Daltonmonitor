@@ -18,6 +18,7 @@ public enum ConfigIdentifier
     UserMode,
     
     ApplicationName,
+    GpuSplitCharacter,
     DaltonIdentifiers,
     WorkshopIdentifiers,
     MentorIdentifiers,

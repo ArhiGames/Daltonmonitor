@@ -35,6 +35,8 @@ public class ConfigManager
         
         /* Data */
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.ApplicationName, "Daltonmonitor"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.GpuSplitCharacter, ",", 
+            "How are the gpu files split, e. g. using a ','; might also be for example a ';'. But only *one* character"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DaltonIdentifiers, ["DAL"]));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.WorkshopIdentifiers, ["DAL+"]));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorIdentifiers,

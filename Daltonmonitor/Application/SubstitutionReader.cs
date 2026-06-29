@@ -17,19 +17,28 @@ public class SubstitutionReader(ConfigManager configManager)
 {
     private Timetable? Timetable { get; set; }
 
+    private char CsvSplitCharacter { get; set; } = '\0';
+
     public Result<Timetable> Process()
     {
-       Result readDaltonDataResult = ReadRegularDaltonData();
-       if (!readDaltonDataResult.IsSuccess)
-       {
-           return readDaltonDataResult.Error!;
-       }
+        string csvSplitString = configManager.GetConfigValue(ConfigIdentifier.GpuSplitCharacter);
+        if (csvSplitString.Length < 1)
+        {
+            return Errors.Unknown;
+        }
+        CsvSplitCharacter = csvSplitString[0];
 
-       // These may fail (result is not checked) as they are not mandatory
-       ReadSubstitutionData();
-       ReadVariantsData();
-       
-       return Timetable!;
+        Result readDaltonDataResult = ReadRegularDaltonData();
+        if (!readDaltonDataResult.IsSuccess)
+        {
+           return readDaltonDataResult.Error!;
+        }
+
+        // These may fail (result is not checked) as they are not mandatory
+        ReadSubstitutionData();
+        ReadVariantsData();
+
+        return Timetable!;
     }
 
     public Result HandleUserMode()
@@ -86,7 +95,7 @@ public class SubstitutionReader(ConfigManager configManager)
         
         foreach (string line in lines)
         {
-            string[] lineContents = line.CsvSplit(',');
+            string[] lineContents = line.CsvSplit(CsvSplitCharacter);
 
             List<Class> classes = [];
 
@@ -157,7 +166,7 @@ public class SubstitutionReader(ConfigManager configManager)
         
         foreach (string line in lines)
         {
-            string[] lineContents = line.CsvSplit(',');
+            string[] lineContents = line.CsvSplit(CsvSplitCharacter);
 
             DaltonType overrideDaltonType = GetDaltonType(lineContents[7]);
             if (overrideDaltonType == DaltonType.None)
@@ -239,8 +248,7 @@ public class SubstitutionReader(ConfigManager configManager)
 
         foreach (string line in lines)
         {
-            // @todo read csv split character from config, so it's more modular
-            string[] lineContents = line.CsvSplit(',');
+            string[] lineContents = line.CsvSplit(CsvSplitCharacter);
 
             int lessonId = Convert.ToInt32(lineContents[0]);
 
