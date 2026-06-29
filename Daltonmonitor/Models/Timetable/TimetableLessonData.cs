@@ -12,6 +12,8 @@ public class TimetableLessonData(int lessonId, DaltonType daltonType, List<Class
 
     public DaltonType DaltonType { get; init; } = daltonType;
 
+    public string VariantIdentifier { get; set; } = string.Empty;
+    
     public List<Class> Classes { get; init; } = classes;
 
     public List<Teacher> Teachers { get; init; } = teachers;

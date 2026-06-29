@@ -25,7 +25,10 @@ public class SubstitutionReader(ConfigManager configManager)
            return readDaltonDataResult.Error!;
        }
 
+       // These may fail (result is not checked) as they are not mandatory
        ReadSubstitutionData();
+       ReadVariantsData();
+       
        return Timetable!;
     }
 
@@ -199,25 +202,67 @@ public class SubstitutionReader(ConfigManager configManager)
 
     private DaltonType GetDaltonType(string identifier)
     {
-        string[] daltonIdentifiers = configManager.GetConfigAsList(ConfigIdentifier.DaltonIdentifiers);
+        string[] daltonIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.DaltonIdentifiers);
         if (daltonIdentifiers.Contains(identifier))
         {
             return DaltonType.Dalton;
         }
         
-        string[] workshopIdentifiers = configManager.GetConfigAsList(ConfigIdentifier.WorkshopIdentifiers);
+        string[] workshopIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.WorkshopIdentifiers);
         if (workshopIdentifiers.Contains(identifier))
         {
             return DaltonType.Workshop;
         }
 
-        string[] mentorIdentifiers = configManager.GetConfigAsList(ConfigIdentifier.MentorIdentifiers);
+        string[] mentorIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.MentorIdentifiers);
         if (mentorIdentifiers.Contains(identifier))
         {
             return DaltonType.Mentor;
         }
         
         return DaltonType.None;
+    }
+    
+    private Result ReadVariantsData()
+    {
+        string gpu002Path = configManager.GetConfigValue(ConfigIdentifier.GPU002);
+
+        string[] lines;
+        try
+        {
+            lines = File.ReadAllLines(gpu002Path);
+        }
+        catch
+        {
+            return Errors.FileError;
+        }
+
+        foreach (string line in lines)
+        {
+            // @todo read csv split character from config, so it's more modular
+            string[] lineContents = line.CsvSplit(',');
+
+            int lessonId = Convert.ToInt32(lineContents[0]);
+
+            string teacherIdentifier = lineContents[5];
+            Teacher teacher = new(teacherIdentifier);
+
+            DaltonType daltonType = GetDaltonType(lineContents[6]);
+
+            string roomIdentifier = lineContents[7];
+            Room room = new(roomIdentifier);
+
+            string variantIdentifier = lineContents[11];
+
+            TimetableLessonData? timetableLessonData =
+                Timetable!.TimetableLessonDatas.FirstOrDefault(tld => tld.LessonId == lessonId && 
+                                                                      tld.Teachers.Contains(teacher) && 
+                                                                      tld.DaltonType == daltonType &&
+                                                                      tld.Rooms.Contains(room));
+            timetableLessonData?.VariantIdentifier = variantIdentifier;
+        }
+
+        return Result.Success();
     }
 
     private Result<string> IsBoundDaltonLesson(string value)
