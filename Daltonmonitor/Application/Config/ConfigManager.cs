@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Daltonmonitor.Mappers;
 
 namespace Daltonmonitor.Application.Config;
 
@@ -15,6 +16,7 @@ public class ConfigManager
     {
         /* Paths */
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU001, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU002, ""));
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU014, ""));
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU018, ""));
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.OutputPath, "./output.html"));
@@ -33,16 +35,25 @@ public class ConfigManager
         
         /* Data */
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.ApplicationName, "Daltonmonitor"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DaltonIdentifiers, "DAL"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.WorkshopIdentifiers, "DAL+"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DaltonIdentifiers, ["DAL"]));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.WorkshopIdentifiers, ["DAL+"]));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorIdentifiers,
-            "M5A,M5B,M5C,M5D,M6A,M6B,M6C,M6D,M7A,M7B,M7C,M7D,M8A,M8B,M8C,M8D,M9A,M9B,M9C,M9D,M10A,M10B,M10C,M10D,MEF,MQ1,MQ2"));
+            ["M5A","M5B","M5C","M5D","M6A","M6B","M6C","M6D","M7A","M7B","M7C","M7D","M8A","M8B","M8C","M8D","M9A", 
+             "M9B","M9C","M9D","M10A","M10B","M10C","M10D","MEF","MQ1","MQ2"]));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorPattern, "M{Class}",
             "The pattern to extract the class to show from the mentor identifiers, e. g. M{Class} when the mentor identifier is like M5A"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.BoundDaltonLessonPattern, "geb. {Information}",
             "The pattern to extract bound dalton lesson information to show on the website. {Information} will be data shown in the app. Must be in the row 'Text for processing'"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.FloorCount, "4", 
             "The amount of floors that should be baked into the html"));
+        
+        /* Variants */
+        ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.VariantsAmount, "2", 
+            "If there are for example just a/b weeks, set this to 2, if there are a/b/c/d weeks, this value should be four"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.VariantOverride, 
+            ["Override$ddMMyyyy$\"A-Wo\""], ConfigType.ComplexListValue,
+            "This should be used as a list of overrides for A/B/... weeks. Using this, you can override your default a/b scheme. " +
+            "Normally, the A/B week just counts up normally. Using this list, the behaviour can be overriden. See the example to learn the syntax rules"));
         
         /* Html */
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowWorkshops, "true"));
@@ -86,14 +97,18 @@ public class ConfigManager
         InitializeConfigData();
     }
 
-    public string[] GetConfigAsList(ConfigIdentifier configIdentifier)
+    public string[] GetConfigListValue(ConfigIdentifier configIdentifier)
     {
-        return configIdentifier == ConfigIdentifier.None ? [] : ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.AsList();
+        return configIdentifier == ConfigIdentifier.None ? [] : 
+            ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.CurrentValue.ToArray();
     }
     
     public string GetConfigValue(ConfigIdentifier configIdentifier)
     {
-        return configIdentifier == ConfigIdentifier.None ? "" : ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!.CurrentValue;
+        if (configIdentifier == ConfigIdentifier.None) return string.Empty;
+
+        ConfigEntryData configEntryData = ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!;
+        return configEntryData.CurrentValue.Count > 0 ? configEntryData.CurrentValue[0] : string.Empty;
     }
 
     private void InitializeConfigData()
@@ -102,7 +117,7 @@ public class ConfigManager
         {
             if (File.Exists(ConfigPath))
             {
-                Dictionary<ConfigIdentifier, string> existingConfigDatas = GetDataFromConfigFile();
+                Dictionary<ConfigIdentifier, List<string>> existingConfigDatas = GetDataFromConfigFile();
                 UpdateConfig(existingConfigDatas);
 
                 ReadConfigFile();
@@ -118,7 +133,7 @@ public class ConfigManager
         }
     }
 
-    private void UpdateConfig(Dictionary<ConfigIdentifier, string> configDatas)
+    private void UpdateConfig(Dictionary<ConfigIdentifier, List<string>> configDatas)
     {
         Dictionary<string, List<ConfigEntryData>> configEntryDatas = ConfigEntryDatas
             .GroupBy(ced => ced.Category)
@@ -136,16 +151,9 @@ public class ConfigManager
                 {
                     stringBuilder.Append($";{configEntryData.Comment}\n");
                 }
-
-                bool exists = configDatas.TryGetValue(configEntryData.Identifier, out string? existingValue);
-                if (exists)
-                {
-                    stringBuilder.Append($"{configEntryData.Identifier.ToString()}={existingValue}\n");
-                }
-                else
-                {
-                    stringBuilder.Append($"{configEntryData.Identifier.ToString()}={configEntryData.CurrentValue}\n");
-                }
+                
+                bool exists = configDatas.TryGetValue(configEntryData.Identifier, out List<string>? existingValues);
+                WriteConfigValue(configEntryData, ref stringBuilder, exists ? existingValues! : configEntryData.CurrentValue);
             }
             stringBuilder.Append('\n');
         }
@@ -153,9 +161,39 @@ public class ConfigManager
         File.WriteAllText(ConfigPath, stringBuilder.ToString());
     }
 
-    private Dictionary<ConfigIdentifier, string> GetDataFromConfigFile()
+    private void WriteConfigValue(ConfigEntryData configEntryData, ref StringBuilder stringBuilder, List<string> existingValues)
     {
-        Dictionary<ConfigIdentifier, string> configDatas = [];
+        switch (configEntryData.ConfigType)
+        {
+            case ConfigType.SingleValue:
+                stringBuilder.Append($"{configEntryData.Identifier.ToString()}={existingValues[0]}\n");
+                break;
+            case ConfigType.InlineListValue:
+                stringBuilder.Append($"{configEntryData.Identifier.ToString()}=");
+                for (int i = 0; i < existingValues.Count; i++)
+                {
+                    stringBuilder.Append(existingValues[i]);
+                    if (existingValues.Count - 1 > i)
+                    {
+                        stringBuilder.Append(',');
+                    }
+                }
+                stringBuilder.Append('\n');
+                break;
+            case ConfigType.ComplexListValue:
+                foreach (string value in existingValues)
+                {
+                    stringBuilder.Append($"+{configEntryData.Identifier.ToString()}={value}\n");
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    private Dictionary<ConfigIdentifier, List<string>> GetDataFromConfigFile()
+    {
+        Dictionary<ConfigIdentifier, List<string>> configDatas = [];
         configDatas.EnsureCapacity(ConfigEntryDatas.Count);
         
         string[] configDataLines = File.ReadAllLines(ConfigPath);
@@ -166,20 +204,46 @@ public class ConfigManager
                 continue;
             }
 
-            string identifier = configData[..configData.IndexOf('=')];
-            bool parsedSuccessfully = Enum.TryParse(identifier, false, out ConfigIdentifier configType);
+            bool startsWithPlus = configData.StartsWith('+');
+            
+            string identifier = configData.Substring(startsWithPlus ? 1 : 0, configData.IndexOf('=') - (startsWithPlus ? 1 : 0));
+            bool parsedSuccessfully = Enum.TryParse(identifier, false, out ConfigIdentifier configIdentifier);
             if (!parsedSuccessfully)
             {
                 continue;
             }
-
+            
+            ConfigEntryData configEntryData = ConfigEntryDatas.FirstOrDefault(ced => ced.Identifier == configIdentifier)!;
             string value = configData[(configData.IndexOf('=') + 1)..];
-            if (value.StartsWith('"') && value.EndsWith('"'))
+
+            switch (configEntryData.ConfigType)
             {
-                configDatas.Add(configType, value.Substring(1, value.Length - 2));
-                continue;
+                case ConfigType.SingleValue when value.StartsWith('"') && value.EndsWith('"'):
+                    configDatas.Add(configIdentifier, [value.Substring(1, value.Length - 2)]);
+                    continue;
+                case ConfigType.SingleValue:
+                    configDatas.Add(configIdentifier, [value]);
+                    break;
+                case ConfigType.ComplexListValue when startsWithPlus:
+                {
+                    bool found = configDatas.TryGetValue(configIdentifier, out List<string>? configValues);
+                    if (found)
+                    {
+                        configValues?.Add(value);
+                    }
+                    else
+                    {
+                        configDatas.Add(configIdentifier, [value]);
+                    }
+
+                    break;
+                }
+                case ConfigType.InlineListValue:
+                    configDatas.Add(configIdentifier, value.CsvSplit(',').ToList());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
-            configDatas.Add(configType, value);
         }
 
         return configDatas;
@@ -187,8 +251,8 @@ public class ConfigManager
 
     public void ReadConfigFile()
     {
-        Dictionary<ConfigIdentifier, string> configDatas = GetDataFromConfigFile();
-        foreach (KeyValuePair<ConfigIdentifier, string> configData in configDatas)
+        Dictionary<ConfigIdentifier, List<string>> configDatas = GetDataFromConfigFile();
+        foreach (KeyValuePair<ConfigIdentifier, List<string>> configData in configDatas)
         {
             ConfigEntryData? configEntryData = ConfigEntryDatas.Find(ced => ced.Identifier == configData.Key);
             configEntryData?.UpdateCurrentValue(configData.Value);
