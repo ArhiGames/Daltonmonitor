@@ -9,9 +9,15 @@
     --border-radius: .75rem;
     --border-radius-tag: .5rem;
     
-    --border: solid #bbdefb .1rem;
-    --border-date: solid #ffba08 .1rem;
-    --border-off: solid #9ef01a .1rem;
+    --border-color: #bbdefb;
+    --border-color-date: #ffba08;
+    --border-color-off: #9ef01a;
+    
+    --border-size: .1rem;
+    
+    --border: solid var(--border-color) var(--border-size);
+    --border-date: solid var(--border-color-date) var(--border-size);
+    --border-off: solid var(--border-color-off) var(--border-size);
 
     --text-color: #0d0d0d;
     --text-color-changed: #c1121f;
@@ -68,6 +74,10 @@ header {
 
 body.single-day main {
     grid-template-columns: 1fr;
+    
+    .day {
+        width: var(--effective-page-width);
+    }
 }
 
 main {
@@ -168,18 +178,37 @@ main {
         border: var(--border);
         grid-row-gap: .225rem;
         
+        .floor:has(.tag + .lesson) {
+            display: grid;
+            grid-template-columns: auto auto;
+            column-gap: .25rem;
+            justify-content: start;
+            height: fit-content;
+            
+            .lesson {
+                grid-column: 2;
+                padding: var(--padding) 0;
+
+            }
+            .tag {
+                grid-column: 1;
+                height: calc(var(--lesson-text-size) + 2 * var(--border-size));
+                align-self: center;
+            }
+        }
+        
         .floor {
             display: flex;
             flex-direction: column;
             grid-column: mod(var(--floor, auto), var(--displayable-floors-per-period));
-            
+            font-size: var(--lesson-text-size);
+
             .lesson {
                 display: flex;
-                gap: .5ch;
+                gap: .25rem;
                 padding: var(--padding) 0;
                 align-items: center;
                 border-bottom: none;
-                font-size: var(--lesson-text-size);
                 flex-wrap: wrap;
             }
 
@@ -195,14 +224,17 @@ main {
                 text-decoration: line-through;
                 color: var(--text-color-changed);
             }
-            .lesson + .lesson {
+            .lesson + .lesson,
+            .lesson + .tag + .lesson {
                 border-top: var(--border);
             }
+
+            .tag + .lesson,
             .lesson:has(.tag) {
                 padding: calc(var(--padding) - var(--padding-tag)) 0;
             }
 
-            .lesson .tag {
+            .tag {
                 background-color: var(--tag-color);
                 border-radius: var(--border-radius-tag);
                 padding: var(--padding-tag);
