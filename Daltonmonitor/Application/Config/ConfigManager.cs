@@ -232,7 +232,9 @@ public class ConfigManager
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.HighlightMentorDalton, "true", 
             "If set to true, dalton lessons with mentors are highlight in a special way"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "5", 
-            "the amount of future days that should be baked into the html"));
+            "The amount of future days that should be baked into the html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MaxShowingDaysCount, "2",
+            "The amount of days that should be shown at max on in an environment which supports JavaScript"));
         
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.SpecialLabel, "SP", 
             "Will only be used if the dalton lesson doesn't fit any of the predefined tags. If empty the label isn't shown"));
