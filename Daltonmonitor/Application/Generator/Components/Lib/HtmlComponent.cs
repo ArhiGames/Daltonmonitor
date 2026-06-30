@@ -4,7 +4,7 @@ namespace Daltonmonitor.Application.Generator.Components.Lib;
 
 public abstract class HtmlComponent
 {
-    protected HtmlComponent? Parent;
+    private HtmlComponent? _parent;
     
     protected List<HtmlComponent> Children { get; } = [];
     protected int MaxChildrenCount = -1;
@@ -20,7 +20,7 @@ public abstract class HtmlComponent
         }
         
         int idx = Children.Count;
-        htmlComponent.Parent = this;
+        htmlComponent._parent = this;
         Children.Add(htmlComponent);
         
         htmlComponent.Initialize();
@@ -30,7 +30,7 @@ public abstract class HtmlComponent
 
     protected T? GetOuter<T>() where T : HtmlComponent
     {
-        HtmlComponent? currentOuter = Parent;
+        HtmlComponent? currentOuter = _parent;
         while (currentOuter is not null)
         {
             if (currentOuter is T castedOuter)
@@ -38,7 +38,7 @@ public abstract class HtmlComponent
                 return castedOuter;
             }
             
-            currentOuter = currentOuter.Parent;
+            currentOuter = currentOuter._parent;
         }
         return null;
     }

@@ -11,6 +11,8 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : HtmlComponent
 {
     private bool _isCancelled;
+    private ConfigManager _configManager = null!;
+    private DaltonType _relevantDaltonType = DaltonType.None;
     
     protected override void Initialize()
     {
@@ -25,11 +27,11 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         IdentifierHtmlComponent? substituteRoomIdentifierHtmlComponent = null;
         IdentifierHtmlComponent? substituteTeacherIdentifierHtmlComponent = null;
 
-        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
+        _configManager = GetOuter<HtmlRootComponent>()!.ConfigManager;
         DayHtmlComponent dayHtmlComponent = GetOuter<DayHtmlComponent>()!;
 
         // The dalton type might change due to substitution, as so, the relevant dalton type stands for the relevant dalton type
-        DaltonType relevantDaltonType = timetableLessonData.DaltonType;
+        _relevantDaltonType = timetableLessonData.DaltonType;
         string? additionalInformation = null;
         
         foreach (SubstitutionData substitutionData in timetableLessonData.SubstitutionDatas)
@@ -65,37 +67,10 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
                 }
             }
 
-            relevantDaltonType = substitutionData.OverrideDaltonType ?? relevantDaltonType;
+            _relevantDaltonType = substitutionData.OverrideDaltonType ?? _relevantDaltonType;
             additionalInformation = substitutionData.AdditionalInformation;
             
             break;
-        }
-        
-        switch (relevantDaltonType)
-        {
-            case DaltonType.None:
-            case DaltonType.Dalton:
-                break;
-            case DaltonType.Workshop:
-            {
-                LabelHtmlComponent labelHtmlComponent = new(LabelType.Workshop);
-                AddChildToComponent(labelHtmlComponent);
-                break;
-            }
-            case DaltonType.Mentor:
-            {
-                LabelHtmlComponent labelHtmlComponent = new(LabelType.Mentor);
-                AddChildToComponent(labelHtmlComponent);
-                break;
-            }
-            case DaltonType.Bound:
-            {
-                LabelHtmlComponent labelHtmlComponent = new(LabelType.Bound);
-                AddChildToComponent(labelHtmlComponent);
-                break;
-            }
-            default:
-                throw new ArgumentOutOfRangeException();
         }
         
         IdentifierHtmlComponent roomIdentifierHtmlComponent = new(IdentifierType.Room, room.RoomId, _isCancelled);
@@ -116,8 +91,8 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         }
 
         bool highlightMentorLesson =
-            htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.HighlightMentorDalton) == "true";
-        if (relevantDaltonType == DaltonType.Mentor && highlightMentorLesson)
+            _configManager.GetConfigValue(ConfigIdentifier.HighlightMentorDalton) == "true";
+        if (_relevantDaltonType == DaltonType.Mentor && highlightMentorLesson)
         {
             Class? classData = timetableLessonData.Classes.Count > 0 ? timetableLessonData.Classes[0] : null;
             if (classData is not null)
@@ -141,14 +116,45 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         string removedString = _isCancelled ? "removed" : "";
         string htmlHead = $"<div class=\"lesson {removedString}\">";
         const string htmlBack = "</div>";
+        
+        bool enableInlineTags = _configManager.GetConfigValue(ConfigIdentifier.EnableInlineTags) == "true";
+        LabelHtmlComponent? labelHtmlComponent = GetLabelHtmlComponent(_relevantDaltonType);
 
         StringBuilder stringBuilder = new();
-        stringBuilder.Append(htmlHead);
+        if (!enableInlineTags && labelHtmlComponent is not null) stringBuilder.Append(labelHtmlComponent.GenerateHtml());
+        stringBuilder.Append(htmlHead); 
+        if (enableInlineTags && labelHtmlComponent is not null) stringBuilder.Append(labelHtmlComponent.GenerateHtml());
+        
         foreach (HtmlComponent htmlComponent in Children)
         {
             stringBuilder.Append(htmlComponent.GenerateHtml());
         }
         stringBuilder.Append(htmlBack);
         return stringBuilder.ToString();
+    }
+
+    private LabelHtmlComponent? GetLabelHtmlComponent(DaltonType daltonType)
+    {
+        ConfigIdentifier configIdentifier = daltonType switch
+        {
+            DaltonType.None or DaltonType.Dalton => ConfigIdentifier.None,
+            DaltonType.Workshop => ConfigIdentifier.WorkshopLabel,
+            DaltonType.Mentor => ConfigIdentifier.MentorLabel,
+            DaltonType.Bound => ConfigIdentifier.BoundDaltonLabel,
+            _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
+        };
+        if (configIdentifier == ConfigIdentifier.None)
+        {
+            return null;
+        }
+
+        string labelString = _configManager.GetConfigValue(configIdentifier);
+        if (labelString == string.Empty)
+        {
+            return null;
+        }
+
+        LabelHtmlComponent labelHtmlComponent = new(labelString);
+        return labelHtmlComponent;
     }
 }

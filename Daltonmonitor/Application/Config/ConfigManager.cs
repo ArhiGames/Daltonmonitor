@@ -242,6 +242,8 @@ public class ConfigManager
             "The string that will be baked into a tag if the dalton lesson is a bound dalton lesson. If empty the label isn't shown"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MentorLabel, "", 
             "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor. If empty the label isn't shown"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.EnableInlineTags, "true",
+            "If this option is enabled, tags are generated into the same column as the lessons themselves. If 'true', tags get an extra column"));
         
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderWorkshopsWithLabelToBottom, "true",
             "If this is set to true, dalton lessons (with a label in front of it) that are workshops are always displayed at the bottom"));

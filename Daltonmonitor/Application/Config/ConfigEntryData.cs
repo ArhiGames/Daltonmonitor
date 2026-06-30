@@ -37,6 +37,7 @@ public enum ConfigIdentifier
     WorkshopLabel,
     BoundDaltonLabel,
     MentorLabel,
+    EnableInlineTags,
     ReorderWorkshopsWithLabelToBottom,
     ReorderMentorDaltonWithLabelToBottom,
     ReorderBoundDaltonWithLabelToBottom,
