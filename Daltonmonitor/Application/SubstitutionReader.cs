@@ -18,6 +18,9 @@ public class SubstitutionReader(ConfigManager configManager)
     private Timetable? Timetable { get; set; }
 
     private char CsvSplitCharacter { get; set; } = '\0';
+    private string[] DaltonIdentifiers { get; set; } = [];
+    private string[] WorkshopIdentifiers { get; set; } = [];
+    private string[] MentorIdentifiers { get; set; } = [];
 
     public Result<Timetable> Process()
     {
@@ -27,6 +30,10 @@ public class SubstitutionReader(ConfigManager configManager)
             return Errors.Unknown;
         }
         CsvSplitCharacter = csvSplitString[0];
+        
+        DaltonIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.DaltonIdentifiers);
+        WorkshopIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.WorkshopIdentifiers);
+        MentorIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.MentorIdentifiers);
 
         Result readDaltonDataResult = ReadRegularDaltonData();
         if (!readDaltonDataResult.IsSuccess)
@@ -61,12 +68,14 @@ public class SubstitutionReader(ConfigManager configManager)
     private void DeleteGpuFiles()
     {
         string gpu001Path = configManager.GetConfigValue(ConfigIdentifier.GPU001);
+        string gpu002Path = configManager.GetConfigValue(ConfigIdentifier.GPU002);
         string gpu014Path = configManager.GetConfigValue(ConfigIdentifier.GPU014);
         string gpu018Path = configManager.GetConfigValue(ConfigIdentifier.GPU018);
 
         try
         {
             File.Delete(gpu001Path);
+            File.Delete(gpu002Path);
             File.Delete(gpu014Path);
             File.Delete(gpu018Path);
         }
@@ -91,7 +100,6 @@ public class SubstitutionReader(ConfigManager configManager)
         }
         
         Timetable = new Timetable(lines.Length);
-        bool showWorkshops = configManager.GetConfigValue(ConfigIdentifier.ShowWorkshops) == "true";
         
         foreach (string line in lines)
         {
@@ -105,9 +113,7 @@ public class SubstitutionReader(ConfigManager configManager)
                 case DaltonType.None:
                     continue;
                 case DaltonType.Dalton:
-                    break;
                 case DaltonType.Workshop:
-                    if (!showWorkshops) continue;
                     break;
                 case DaltonType.Mentor:
                 {
@@ -211,20 +217,17 @@ public class SubstitutionReader(ConfigManager configManager)
 
     private DaltonType GetDaltonType(string identifier)
     {
-        string[] daltonIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.DaltonIdentifiers);
-        if (daltonIdentifiers.Contains(identifier))
+        if (DaltonIdentifiers.Contains(identifier))
         {
             return DaltonType.Dalton;
         }
         
-        string[] workshopIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.WorkshopIdentifiers);
-        if (workshopIdentifiers.Contains(identifier))
+        if (WorkshopIdentifiers.Contains(identifier))
         {
             return DaltonType.Workshop;
         }
 
-        string[] mentorIdentifiers = configManager.GetConfigListValue(ConfigIdentifier.MentorIdentifiers);
-        if (mentorIdentifiers.Contains(identifier))
+        if (MentorIdentifiers.Contains(identifier))
         {
             return DaltonType.Mentor;
         }
@@ -255,19 +258,23 @@ public class SubstitutionReader(ConfigManager configManager)
             string teacherIdentifier = lineContents[5];
             Teacher teacher = new(teacherIdentifier);
 
-            DaltonType daltonType = GetDaltonType(lineContents[6]);
-
             string roomIdentifier = lineContents[7];
             Room room = new(roomIdentifier);
 
             string variantIdentifier = lineContents[11];
+            if (variantIdentifier.IsWhiteSpace())
+            {
+                continue;
+            }
 
-            TimetableLessonData? timetableLessonData =
-                Timetable!.TimetableLessonDatas.FirstOrDefault(tld => tld.LessonId == lessonId && 
-                                                                      tld.Teachers.Contains(teacher) && 
-                                                                      tld.DaltonType == daltonType &&
-                                                                      tld.Rooms.Contains(room));
-            timetableLessonData?.VariantIdentifier = variantIdentifier;
+            List<TimetableLessonData> timetableLessonDatas =
+                Timetable!.TimetableLessonDatas.Where(tld => tld.LessonId == lessonId && 
+                                                             tld.Teachers.Contains(teacher) && 
+                                                             tld.Rooms.Contains(room)).ToList();
+            foreach (TimetableLessonData timetableLessonData in timetableLessonDatas)
+            {
+                timetableLessonData.VariantIdentifier = variantIdentifier;
+            }
         }
 
         return Result.Success();

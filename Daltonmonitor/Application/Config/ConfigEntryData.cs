@@ -26,7 +26,7 @@ public enum ConfigIdentifier
     BoundDaltonLessonPattern,
     FloorCount,
     
-    VariantsAmount,
+    Variants,
     VariantOverride,
     
     ShowWorkshops,

@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
+using Daltonmonitor.Application.Managers.Variants;
 using Daltonmonitor.Models.Timetable;
 
 namespace Daltonmonitor.Application.Generator.Components.User;
@@ -10,11 +11,13 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 public class HtmlRootComponent : HtmlComponent
 {
     public ConfigManager ConfigManager { get; }
+    public VariantsManager VariantsManager { get; }
     private readonly Timetable _timetable;
 
-    public HtmlRootComponent(ConfigManager configManager, Timetable timetable)
+    public HtmlRootComponent(ConfigManager configManager, VariantsManager variantsManager, Timetable timetable)
     {
         ConfigManager = configManager;
+        VariantsManager = variantsManager;
         _timetable = timetable;
         
         SetAsRootComponent();

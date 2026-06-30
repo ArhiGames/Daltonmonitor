@@ -14,88 +14,7 @@ public class ConfigManager
 
     public ConfigManager()
     {
-        /* Paths */
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU001, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU002, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU014, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU018, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.OutputPath, "./output.html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.ScriptSourcePath, "./script.js",
-            "The path to the javascript file that will be baked into the generated html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.StyleSourcePath, "./style.css", 
-            "The path to the css file that will be baked into the generated html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.LogoSvgSourcePath, "./logo.svg",
-            "The path to the svg logo file that should be displayed in the top left corner of the html website. Must be an svg"));
-        
-        /* Runtime */
-        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.CheckInterval, "30", 
-            "check interval in seconds"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.UserMode, "KEEP", 
-            "DEL: deletes GPU files after usage. KEEP: keeps GPU files after usage"));
-        
-        /* Data */
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.ApplicationName, "Daltonmonitor"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.GpuSplitCharacter, ",", 
-            "How are the gpu files split, e. g. using a ','; might also be for example a ';'. But only *one* character"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DaltonIdentifiers, ["DAL"]));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.WorkshopIdentifiers, ["DAL+"]));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorIdentifiers,
-            ["M5A","M5B","M5C","M5D","M6A","M6B","M6C","M6D","M7A","M7B","M7C","M7D","M8A","M8B","M8C","M8D","M9A", 
-             "M9B","M9C","M9D","M10A","M10B","M10C","M10D","MEF","MQ1","MQ2"]));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorPattern, "M{Class}",
-            "The pattern to extract the class to show from the mentor identifiers, e. g. M{Class} when the mentor identifier is like M5A"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.BoundDaltonLessonPattern, "geb. {Information}",
-            "The pattern to extract bound dalton lesson information to show on the website. {Information} will be data shown in the app. Must be in the row 'Text for processing'"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.FloorCount, "4", 
-            "The amount of floors that should be baked into the html"));
-        
-        /* Variants */
-        ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.VariantsAmount, "2", 
-            "If there are for example just a/b weeks, set this to 2, if there are a/b/c/d weeks, this value should be four"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.VariantOverride, 
-            ["Override$ddMMyyyy$\"A-Wo\""], ConfigType.ComplexListValue,
-            "This should be used as a list of overrides for A/B/... weeks. Using this, you can override your default a/b scheme. " +
-            "Normally, the A/B week just counts up normally. Using this list, the behaviour can be overriden. See the example to learn the syntax rules"));
-        
-        /* Html */
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowWorkshops, "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowVacationDays, "true",
-            "If show vacation days is set to true, vacation days are not skipped but highlighted in a special way. Weekends are always skipped"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.HighlightMentorDalton, "true", 
-            "If set to true, dalton lessons with mentors are highlight in a special way"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "5", 
-            "the amount of future days that should be baked into the html"));
-        
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.SpecialLabel, "SP", 
-            "Will only be used if the dalton lesson doesn't fit any of the predefined tags. If empty the label isn't shown"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.WorkshopLabel, "WS", 
-            "The string that will be baked into a tag if the dalton lesson is a workshop. If empty the label isn't shown"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.BoundDaltonLabel, "GEB", 
-            "The string that will be baked into a tag if the dalton lesson is a bound dalton lesson. If empty the label isn't shown"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MentorLabel, "", 
-            "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor. If empty the label isn't shown"));
-        
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderWorkshopsWithLabelToBottom, "true",
-            "If this is set to true, dalton lessons (with a label in front of it) that are workshops are always displayed at the bottom"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderMentorDaltonWithLabelToBottom, "",
-            "If this is set to true, dalton lessons (with a label in front of it) that are mentor dalton lessons are always displayed at the bottom"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderBoundDaltonWithLabelToBottom, "",
-            "If this is set to true, dalton lessons (with a label in front of it) that are bound dalton lessons are always displayed at the bottom"));
-        
-        /* Style */
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BackgroundColor, "#00bbff"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.ElementColor, "#90caf9"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColor, "#bbdefb"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TagColor, "#bbdefb"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.DateColor, "#f48c06"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColorDate, "#ffba08"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.OffDayColor, "#70e000"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColorOffDay, "#9ef01a"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TextColor, "#0d0d0d"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TextColorSubstitution, "#c1121f"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.LessonTextSize, "0.9rem"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderSize, "0.1rem"));
-        
+        Setup();
         InitializeConfigData();
     }
 
@@ -174,7 +93,7 @@ public class ConfigManager
                 stringBuilder.Append($"{configEntryData.Identifier.ToString()}=");
                 for (int i = 0; i < existingValues.Count; i++)
                 {
-                    stringBuilder.Append(existingValues[i]);
+                    stringBuilder.Append($"\"{existingValues[i]}\"");
                     if (existingValues.Count - 1 > i)
                     {
                         stringBuilder.Append(',');
@@ -259,5 +178,90 @@ public class ConfigManager
             ConfigEntryData? configEntryData = ConfigEntryDatas.Find(ced => ced.Identifier == configData.Key);
             configEntryData?.UpdateCurrentValue(configData.Value);
         }
+    }
+
+    private void Setup()
+    {
+        /* Paths */
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU001, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU002, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU014, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU018, ""));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.OutputPath, "./output.html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.ScriptSourcePath, "./script.js",
+            "The path to the javascript file that will be baked into the generated html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.StyleSourcePath, "./style.css", 
+            "The path to the css file that will be baked into the generated html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.LogoSvgSourcePath, "./logo.svg",
+            "The path to the svg logo file that should be displayed in the top left corner of the html website. Must be an svg"));
+        
+        /* Runtime */
+        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.CheckInterval, "30", 
+            "check interval in seconds"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.UserMode, "KEEP", 
+            "DEL: deletes GPU files after usage. KEEP: keeps GPU files after usage"));
+        
+        /* Data */
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.ApplicationName, "Daltonmonitor"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.GpuSplitCharacter, ",", 
+            "How are the gpu files split, e. g. using a ','; might also be for example a ';'. But only *one* character"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DaltonIdentifiers, ["DAL"]));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.WorkshopIdentifiers, ["DAL+"]));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorIdentifiers,
+            ["M5A","M5B","M5C","M5D","M6A","M6B","M6C","M6D","M7A","M7B","M7C","M7D","M8A","M8B","M8C","M8D","M9A", 
+             "M9B","M9C","M9D","M10A","M10B","M10C","M10D","MEF","MQ1","MQ2"]));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorPattern, "M{Class}",
+            "The pattern to extract the class to show from the mentor identifiers, e. g. M{Class} when the mentor identifier is like M5A"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.BoundDaltonLessonPattern, "geb. {Information}",
+            "The pattern to extract bound dalton lesson information to show on the website. {Information} will be data shown in the app. Must be in the row 'Text for processing'"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.FloorCount, "4", 
+            "The amount of floors that should be baked into the html"));
+        
+        /* Variants */
+        ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.Variants, ["A-Wo", "B-Wo"], 
+            ConfigType.InlineListValue, "Defines all the variants, have to be in the order they should be used in 'VariantOverride'"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.VariantOverride, 
+            ["Override$yyyyMMdd$\"A-Wo\""], ConfigType.ComplexListValue,
+            "THE DATES MUST BE IN ORDER! This should be used as a list of overrides for A/B/... weeks. Using this, you can override your default a/b scheme. " +
+            "Normally, the A/B week just counts up normally. Using this list, the behaviour can be overriden. See the example to learn the syntax rules."));
+        
+        /* Html */
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowWorkshops, "true"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowVacationDays, "true",
+            "If show vacation days is set to true, vacation days are not skipped but highlighted in a special way. Weekends are always skipped"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.HighlightMentorDalton, "true", 
+            "If set to true, dalton lessons with mentors are highlight in a special way"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "5", 
+            "the amount of future days that should be baked into the html"));
+        
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.SpecialLabel, "SP", 
+            "Will only be used if the dalton lesson doesn't fit any of the predefined tags. If empty the label isn't shown"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.WorkshopLabel, "WS", 
+            "The string that will be baked into a tag if the dalton lesson is a workshop. If empty the label isn't shown"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.BoundDaltonLabel, "GEB", 
+            "The string that will be baked into a tag if the dalton lesson is a bound dalton lesson. If empty the label isn't shown"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MentorLabel, "", 
+            "The string that will be baked into a tag if the dalton lesson is a dalton lesson with the mentor. If empty the label isn't shown"));
+        
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderWorkshopsWithLabelToBottom, "true",
+            "If this is set to true, dalton lessons (with a label in front of it) that are workshops are always displayed at the bottom"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderMentorDaltonWithLabelToBottom, "",
+            "If this is set to true, dalton lessons (with a label in front of it) that are mentor dalton lessons are always displayed at the bottom"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderBoundDaltonWithLabelToBottom, "",
+            "If this is set to true, dalton lessons (with a label in front of it) that are bound dalton lessons are always displayed at the bottom"));
+        
+        /* Style */
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BackgroundColor, "#00bbff"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.ElementColor, "#90caf9"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColor, "#bbdefb"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TagColor, "#bbdefb"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.DateColor, "#f48c06"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColorDate, "#ffba08"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.OffDayColor, "#70e000"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderColorOffDay, "#9ef01a"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TextColor, "#0d0d0d"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.TextColorSubstitution, "#c1121f"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.LessonTextSize, "0.9rem"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BorderSize, "0.1rem"));
     }
 }
