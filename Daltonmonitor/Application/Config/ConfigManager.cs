@@ -216,6 +216,8 @@ public class ConfigManager
             "The pattern to extract bound dalton lesson information to show on the website. {Information} will be data shown in the app. Must be in the row 'Text for processing'"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.FloorCount, "4", 
             "The amount of floors that should be baked into the html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DefaultFloor, "1",
+            "All lessons, that cannot be assigned to a specific floor, are assigned to this floor"));
         
         /* Variants */
         ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.Variants, ["A-Wo", "B-Wo"], 
@@ -253,6 +255,8 @@ public class ConfigManager
             "If this is set to true, dalton lessons (with a label in front of it) that are mentor dalton lessons are always displayed at the bottom"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ReorderBoundDaltonWithLabelToBottom, "",
             "If this is set to true, dalton lessons (with a label in front of it) that are bound dalton lessons are always displayed at the bottom"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ExtraColumnForWorkshops, "true",
+            "If set to 'true', workshops won't get shown in the normal column, but rather in an extra column just for workshops"));
         
         /* Style */
         ConfigEntryDatas.Add(new ConfigEntryData("Style", ConfigIdentifier.BackgroundColor, "#00bbff"));

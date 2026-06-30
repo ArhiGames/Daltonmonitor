@@ -25,6 +25,7 @@ public enum ConfigIdentifier
     MentorPattern,
     BoundDaltonLessonPattern,
     FloorCount,
+    DefaultFloor,
     
     Variants,
     VariantOverride,
@@ -42,6 +43,7 @@ public enum ConfigIdentifier
     ReorderWorkshopsWithLabelToBottom,
     ReorderMentorDaltonWithLabelToBottom,
     ReorderBoundDaltonWithLabelToBottom,
+    ExtraColumnForWorkshops,
     
     BackgroundColor,
     ElementColor,

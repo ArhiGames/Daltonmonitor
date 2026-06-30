@@ -12,6 +12,7 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComponent
 {
     public DateTime DateTime { get; } = dateTime;
+    public int ExtraColumns { get; set; } = 0;
 
     private ConfigManager _configManager = null!;
     private VariantsManager _variantsManager = null!;
@@ -62,7 +63,7 @@ public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComp
         int floorCount = Convert.ToInt32(htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.FloorCount));
         
         string dataDateTimeString = DateTime.ToString("yyyyMMdd");
-        string htmlHead = $"<div class=\"day\" data-date={dataDateTimeString} style=\"--floor-count: {floorCount};\">";
+        string htmlHead = $"<div class=\"day\" data-date={dataDateTimeString} style=\"--floor-count: {floorCount + ExtraColumns};\">";
         
         string dateTimeString = DateTime.ToLongDateString();
         string htmlDay = $"<h1 class=\"date\">{dateTimeString}</h1>";

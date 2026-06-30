@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
 using Daltonmonitor.Models.Timetable;
 using Daltonmonitor.Models.Types;
@@ -9,12 +11,21 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int lesson) : HtmlComponent
 {
+    private bool _extraColumnForWorkshops = false;
+    private int _defaultFloor = 1;
+    private int _floorCount = 0;
+    
     protected override void Initialize()
     {
+        ConfigManager configManager = GetOuter<HtmlRootComponent>()!.ConfigManager;
+        _extraColumnForWorkshops = configManager.GetConfigValue(ConfigIdentifier.ExtraColumnForWorkshops) == "true";
+        _defaultFloor = Convert.ToInt32(configManager.GetConfigValue(ConfigIdentifier.DefaultFloor));
+        _floorCount = Convert.ToInt32(configManager.GetConfigValue(ConfigIdentifier.FloorCount));
+        
         /* floor, data*/
         Dictionary<int, List<TimetableLessonData>> timetableLessonDatas = lessonDatas
             .Where(tld => tld.Lesson == lesson)
-            .GroupBy(tld => GetFloorByRoom(tld.Rooms.Count > 0 ? tld.Rooms[0] : null))
+            .GroupBy(GetFloor)
             .OrderBy(group => group.Key)
             .ToDictionary(
                 group => group.Key,
@@ -45,15 +56,29 @@ public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int less
         return stringBuilder.ToString();
     }
     
-    private int GetFloorByRoom(Room? room)
+    private int GetFloor(TimetableLessonData timetableLessonData)
     {
-        if (room is null)
+        if (_extraColumnForWorkshops && timetableLessonData.DaltonType == DaltonType.Workshop)
         {
-            return 1;
+            DayHtmlComponent dayHtmlComponent = GetOuter<DayHtmlComponent>()!;
+            dayHtmlComponent.ExtraColumns = 1;
+            return _floorCount + 1;
+        }
+        
+        Room? relevantRoom = timetableLessonData.Rooms.Count > 0 ? timetableLessonData.Rooms[0] : null;
+        if (relevantRoom is null)
+        {
+            return _defaultFloor;
+        }
+
+        // todo complete garbage this code, read from config later!
+        if (relevantRoom.RoomId.Length <= 0)
+        {
+            return _defaultFloor;
         }
         
         // todo read from config
-        char startChar = room.RoomId[0];
+        char startChar = relevantRoom.RoomId[0];
         return startChar switch
         {
             '1' => 1,
@@ -64,7 +89,7 @@ public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int less
             '6' => 6,
             '7' => 7,
             '8' => 8,
-            _ => 1
+            _ => _defaultFloor
         };
     }
 }
