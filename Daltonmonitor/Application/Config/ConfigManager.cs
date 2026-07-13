@@ -233,12 +233,14 @@ public class ConfigManager
         
         /* Html */
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowWorkshops, "true"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowVacationDays, "true",
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowVacationDays, "false",
             "If show vacation days is set to true, vacation days are not skipped but highlighted in a special way. Weekends are always skipped"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.HighlightMentorDalton, "true", 
             "If set to true, dalton lessons with mentors are highlight in a special way"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "5", 
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.PreviewingDaysCount, "5",
             "The amount of future days that should be baked into the html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MaxFutureDaysAfterOffDay, "3",
+            "This config is to prevent that after long summer vacations (for example) there are still shown school days. After x free days no other day is shown anymore. Zero to ignore"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MaxShowingDaysCount, "2",
             "The amount of days that should be shown at max on in an environment which supports JavaScript"));
         

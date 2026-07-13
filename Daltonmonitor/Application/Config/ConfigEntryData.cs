@@ -36,6 +36,7 @@ public enum ConfigIdentifier
     ShowVacationDays,
     HighlightMentorDalton,
     PreviewingDaysCount,
+    MaxFutureDaysAfterOffDay,
     MaxShowingDaysCount,
     SpecialLabel,
     WorkshopLabel,

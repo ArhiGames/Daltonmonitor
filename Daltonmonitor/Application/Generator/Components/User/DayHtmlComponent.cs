@@ -9,7 +9,7 @@ using Daltonmonitor.Models.Timetable;
 
 namespace Daltonmonitor.Application.Generator.Components.User;
 
-public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComponent
+public class DayHtmlComponent(Timetable timetable, DateTime dateTime, VacationData? vacationData = null) : HtmlComponent
 {
     public DateTime DateTime { get; } = dateTime;
     public int ExtraColumns { get; set; }
@@ -19,6 +19,11 @@ public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComp
 
     protected override void Initialize()
     {
+        if (vacationData is not null)
+        {
+            return;
+        }
+        
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
         _variantsManager = htmlRootComponent.GetManager<VariantsManager>();
         _configManager = htmlRootComponent.ConfigManager;
@@ -59,15 +64,24 @@ public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComp
     
     public override string GenerateHtml()
     {
-        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
-        int floorCount = Convert.ToInt32(htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.FloorCount));
-        
         string dataDateTimeString = DateTime.ToString("yyyyMMdd");
-        string htmlHead = $"<div class=\"day\" data-date={dataDateTimeString} style=\"--floor-count: {floorCount + ExtraColumns};\">";
-        
         string dateTimeString = DateTime.ToLongDateString();
         string htmlDay = $"<h1 class=\"date\">{dateTimeString}</h1>";
         
+        if (vacationData is not null)
+        {
+            string htmlString = $"<div class=\"day off\" data-date=\"{dataDateTimeString}\">" +
+                                htmlDay +
+                                $"<div class=\"info\"><p>{vacationData.VacationDescription}</p></div>" +
+                                "</div>";
+            return htmlString;
+        }
+        
+        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
+        int floorCount = Convert.ToInt32(htmlRootComponent.ConfigManager.GetConfigValue(ConfigIdentifier.FloorCount));
+        
+        
+        string htmlHead = $"<div class=\"day\" data-date={dataDateTimeString} style=\"--floor-count: {floorCount + ExtraColumns};\">";
         const string htmlBack = "</div>";
 
         StringBuilder stringBuilder = new();

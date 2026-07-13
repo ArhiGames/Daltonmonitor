@@ -44,6 +44,7 @@ public class SubstitutionReader(ConfigManager configManager)
         // These may fail (result is not checked) as they are not mandatory
         ReadSubstitutionData();
         ReadVariantsData();
+        ReadVacationData();
 
         return Timetable!;
     }
@@ -210,6 +211,38 @@ public class SubstitutionReader(ConfigManager configManager)
                                                                       tld.Day == dateTime.DayOfWeek &&
                                                                       tld.Lesson == lesson);
             timetableLessonData?.AddSubstitutionData(substitutionData);
+        }
+
+        return Result.Success();
+    }
+
+    private Result ReadVacationData()
+    {
+        string gpu018Path = configManager.GetConfigValue(ConfigIdentifier.GPU018);
+
+        string[] lines;
+        try
+        {
+            lines = File.ReadAllLines(gpu018Path);
+        }
+        catch
+        {
+            return Errors.FileError;
+        }
+
+        foreach (string line in lines)
+        {
+            string[] lineContents = line.CsvSplit(CsvSplitCharacter);
+
+            string vacationName = lineContents[0];
+            string vacationDescription = lineContents[1];
+            DateTime vacationStartDate = DateTime.ParseExact(lineContents[2], "yyyyMMdd", CultureInfo.InvariantCulture);
+            DateTime vacationEndDate = DateTime.ParseExact(lineContents[3], "yyyyMMdd", CultureInfo.InvariantCulture);
+            bool isOffDay = lineContents[4] == "F";
+
+            VacationData vacationData = new(vacationName, vacationDescription, vacationStartDate, vacationEndDate,
+                isOffDay);
+            Timetable!.AddVacationData(vacationData);
         }
 
         return Result.Success();
