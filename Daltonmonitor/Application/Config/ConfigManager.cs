@@ -216,8 +216,6 @@ public class ConfigManager
             "The pattern to extract bound dalton lesson information to show on the website. {Information} will be data shown in the app. Must be in the row 'Text for processing'"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.FloorCount, "4", 
             "The amount of floors that should be baked into the html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DefaultFloor, "1",
-            "All lessons, that cannot be assigned to a specific floor, are assigned to this floor"));
         
         /* Variants */
         ConfigEntryDatas.Add(new ConfigEntryData("Variants", ConfigIdentifier.Variants, ["A-Wo", "B-Wo"], 
@@ -226,6 +224,12 @@ public class ConfigManager
             ["Override$yyyyMMdd$\"A-Wo\""], ConfigType.ComplexListValue,
             "THE DATES MUST BE IN ORDER! This should be used as a list of overrides for A/B/... weeks. Using this, you can override your default a/b scheme. " +
             "Normally, the A/B week just counts up normally. Using this list, the behaviour can be overriden. See the example to learn the syntax rules."));
+        
+        /* Floors */
+        ConfigEntryDatas.Add(new ConfigEntryData("Floors", ConfigIdentifier.DefaultFloor, "1",
+            "All lessons, that cannot be assigned to a specific floor, are assigned to this floor"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Floors", ConfigIdentifier.FloorOverride,
+            ["\"\\b1\\d+\\b\"$1"], ConfigType.ComplexListValue, "Before the first $: regex pattern that is used as a rule, if the regex matches the room identifier, the floor after the $ is taken (must be a number)"));
         
         /* Html */
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.ShowWorkshops, "true"));

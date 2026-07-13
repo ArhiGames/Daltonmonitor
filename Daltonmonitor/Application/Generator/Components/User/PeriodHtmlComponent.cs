@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
+using Daltonmonitor.Application.Managers.Floors;
 using Daltonmonitor.Models.Timetable;
 using Daltonmonitor.Models.Types;
 
@@ -11,13 +12,17 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int lesson) : HtmlComponent
 {
-    private bool _extraColumnForWorkshops = false;
+    private FloorsManager _floorsManager = null!;
+    private bool _extraColumnForWorkshops;
     private int _defaultFloor = 1;
-    private int _floorCount = 0;
+    private int _floorCount;
     
     protected override void Initialize()
     {
-        ConfigManager configManager = GetOuter<HtmlRootComponent>()!.ConfigManager;
+        HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
+        ConfigManager configManager = htmlRootComponent.ConfigManager;
+        _floorsManager = htmlRootComponent.GetManager<FloorsManager>();
+        
         _extraColumnForWorkshops = configManager.GetConfigValue(ConfigIdentifier.ExtraColumnForWorkshops) == "true";
         _defaultFloor = Convert.ToInt32(configManager.GetConfigValue(ConfigIdentifier.DefaultFloor));
         _floorCount = Convert.ToInt32(configManager.GetConfigValue(ConfigIdentifier.FloorCount));
@@ -66,30 +71,12 @@ public class PeriodHtmlComponent(List<TimetableLessonData> lessonDatas, int less
         }
         
         Room? relevantRoom = timetableLessonData.Rooms.Count > 0 ? timetableLessonData.Rooms[0] : null;
-        if (relevantRoom is null)
+        if (relevantRoom is null || relevantRoom.RoomId.Length <= 0)
         {
             return _defaultFloor;
         }
 
-        // todo complete garbage this code, read from config later!
-        if (relevantRoom.RoomId.Length <= 0)
-        {
-            return _defaultFloor;
-        }
-        
-        // todo read from config
-        char startChar = relevantRoom.RoomId[0];
-        return startChar switch
-        {
-            '1' => 1,
-            '2' => 2,
-            '3' => 3,
-            '4' => 4,
-            '5' => 5,
-            '6' => 6,
-            '7' => 7,
-            '8' => 8,
-            _ => _defaultFloor
-        };
+        int floor = _floorsManager.GetFloorByIdentifier(relevantRoom.RoomId);
+        return floor;
     }
 }

@@ -12,16 +12,16 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 public class DayHtmlComponent(Timetable timetable, DateTime dateTime) : HtmlComponent
 {
     public DateTime DateTime { get; } = dateTime;
-    public int ExtraColumns { get; set; } = 0;
+    public int ExtraColumns { get; set; }
 
-    private ConfigManager _configManager = null!;
     private VariantsManager _variantsManager = null!;
+    private ConfigManager _configManager = null!;
 
     protected override void Initialize()
     {
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
+        _variantsManager = htmlRootComponent.GetManager<VariantsManager>();
         _configManager = htmlRootComponent.ConfigManager;
-        _variantsManager = htmlRootComponent.VariantsManager;
         
         Dictionary<int, List<TimetableLessonData>> lessonTimetableLessonDatas = timetable.TimetableLessonDatas
             .Where(IsTimetableLessonRelevant)

@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator.Components.Lib;
+using Daltonmonitor.Application.Managers;
+using Daltonmonitor.Application.Managers.Floors;
 using Daltonmonitor.Application.Managers.Variants;
 using Daltonmonitor.Models.Timetable;
 
@@ -12,16 +14,31 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 public class HtmlRootComponent : HtmlComponent
 {
     public ConfigManager ConfigManager { get; }
-    public VariantsManager VariantsManager { get; }
     private readonly Timetable _timetable;
+    
+    private List<Manager> Managers { get; } = [];
 
-    public HtmlRootComponent(ConfigManager configManager, VariantsManager variantsManager, Timetable timetable)
+    public HtmlRootComponent(ConfigManager configManager, Timetable timetable)
     {
         ConfigManager = configManager;
-        VariantsManager = variantsManager;
         _timetable = timetable;
         
+        Managers.Add(new VariantsManager(ConfigManager));
+        Managers.Add(new FloorsManager(ConfigManager));
+        
         SetAsRootComponent();
+    }
+
+    public T GetManager<T>() where T : Manager
+    {
+        foreach (Manager manager in Managers)
+        {
+            if (manager is T casted)
+            {
+                return casted;
+            }
+        }
+        return null!;
     }
     
     protected override void Initialize()

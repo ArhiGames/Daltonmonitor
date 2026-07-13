@@ -7,32 +7,45 @@ using Daltonmonitor.Mappers;
 
 namespace Daltonmonitor.Application.Managers.Variants;
 
-public class VariantsManager(ConfigManager configManager)
+public class VariantsManager : Manager
 {
-    private ConfigManager ConfigManager { get; init; } = configManager;
-
     private List<VariantsData> VariantsDatas { get; set; } = [];
     private string[] VariantIdentifiers { get; set; } = [];
 
-    public void Initialize()
+    public VariantsManager(ConfigManager configManager)
+        : base(configManager)
+    {
+        Initialize();
+    }
+
+    private void Initialize()
     {
         VariantIdentifiers = ConfigManager.GetConfigListValue(ConfigIdentifier.Variants);
         string[] variantRules = ConfigManager.GetConfigListValue(ConfigIdentifier.VariantOverride);
 
-        foreach (string variantRule in variantRules)
+        try
         {
-            string[] overrideParts = variantRule.CsvSplit('$');
-            bool parsedSuccessfully = Enum.TryParse(overrideParts[0], out VariantType variantType);
-            if (!parsedSuccessfully)
+            foreach (string variantRule in variantRules)
             {
-                continue;
+                string[] overrideParts = variantRule.CsvSplit('$');
+                bool parsedSuccessfully = Enum.TryParse(overrideParts[0], out VariantType variantType);
+                if (!parsedSuccessfully)
+                {
+                    continue;
+                }
+
+                DateTime startDateTime =
+                    DateTime.ParseExact(overrideParts[1], "yyyyMMdd", CultureInfo.InvariantCulture);
+                string identifier = overrideParts[2];
+
+                VariantsData variantsData = new(variantType, startDateTime, identifier);
+                VariantsDatas.Add(variantsData);
             }
-
-            DateTime startDateTime = DateTime.ParseExact(overrideParts[1], "yyyyMMdd", CultureInfo.InvariantCulture);
-            string identifier = overrideParts[2];
-
-            VariantsData variantsData = new(variantType, startDateTime, identifier);
-            VariantsDatas.Add(variantsData);
+        }
+        catch
+        {
+            VariantIdentifiers = [];
+            VariantsDatas.Clear();
         }
     }
 
@@ -45,7 +58,11 @@ public class VariantsManager(ConfigManager configManager)
             return string.Empty;
         }
 
-        int latestVariantIdentifierIdx = VariantIdentifiers.IndexOf(latestVariantData.VariantIdentifier); 
+        int latestVariantIdentifierIdx = VariantIdentifiers.IndexOf(latestVariantData.VariantIdentifier);
+        if (latestVariantIdentifierIdx == -1)
+        {
+            return string.Empty;
+        }
 
         TimeSpan timeSpan = dateTime.Subtract(latestVariantData.StartingDate);
         int totalWeeks = (int)timeSpan.TotalDays * 7;

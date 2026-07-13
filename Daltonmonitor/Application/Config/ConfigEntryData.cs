@@ -25,10 +25,12 @@ public enum ConfigIdentifier
     MentorPattern,
     BoundDaltonLessonPattern,
     FloorCount,
-    DefaultFloor,
     
     Variants,
     VariantOverride,
+    
+    DefaultFloor,
+    FloorOverride,
     
     ShowWorkshops,
     ShowVacationDays,

@@ -4,7 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Daltonmonitor.Application.Config;
 using Daltonmonitor.Application.Generator;
-using Daltonmonitor.Application.Managers.Variants;
 using Daltonmonitor.Models.Timetable;
 using Daltonmonitor.Models.Types.Common.Result;
 
@@ -15,7 +14,6 @@ public delegate void RunningStateChanged(bool newState);
 public class Daltonmonitor
 {
     private ConfigManager ConfigManager { get; } = new();
-    private VariantsManager VariantsManager { get; }
     private SubstitutionReader SubstitutionReader { get; }
     private HtmlGenerator HtmlGenerator { get; }
 
@@ -26,9 +24,8 @@ public class Daltonmonitor
 
     public Daltonmonitor()
     {
-        VariantsManager = new VariantsManager(ConfigManager);
         SubstitutionReader = new SubstitutionReader(ConfigManager);
-        HtmlGenerator = new HtmlGenerator(ConfigManager, VariantsManager);
+        HtmlGenerator = new HtmlGenerator(ConfigManager);
     }
 
     public void ToggleRunningApplicationLogic()
@@ -81,7 +78,6 @@ public class Daltonmonitor
     private void Process()
     {
         ConfigManager.ReadConfigFile();
-        VariantsManager.Initialize();
         
         Result<Timetable> timetableResult = SubstitutionReader.Process();
         if (!timetableResult.IsSuccess)
