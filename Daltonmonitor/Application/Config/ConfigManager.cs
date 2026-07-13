@@ -208,8 +208,8 @@ public class ConfigManager
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.DaltonIdentifiers, ["DAL"]));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.WorkshopIdentifiers, ["DAL+"]));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorIdentifiers,
-            ["M5A","M5B","M5C","M5D","M6A","M6B","M6C","M6D","M7A","M7B","M7C","M7D","M8A","M8B","M8C","M8D","M9A", 
-             "M9B","M9C","M9D","M10A","M10B","M10C","M10D","MEF","MQ1","MQ2"]));
+            ["M5A","M5B","M5C","M5D","M5E", "M6A","M6B","M6C","M6D","M6E","M7A","M7B","M7C","M7D","M7E",
+                "M8A","M8B","M8C","M8D","M8E","M9A","M9B","M9C","M9D","M9E","M10A","M10B","M10C","M10D","M10E","MEF","MQ1","MQ2"]));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.MentorPattern, "M{Class}",
             "The pattern to extract the class to show from the mentor identifiers, e. g. M{Class} when the mentor identifier is like M5A"));
         ConfigEntryDatas.Add(new ConfigEntryData("Data", ConfigIdentifier.BoundDaltonLessonPattern, "geb. {Information}",
