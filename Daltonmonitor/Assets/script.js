@@ -18,7 +18,7 @@ function checkVisibleDays() {
         if (Number(day.dataset.date) < currentDateNumber || countVisibleDays >= maxNumberOfDaysToDisplay) {
             day.style.display = "none";
         } else {
-            day.style.display = "grid";
+            day.style.display = "auto";
             countVisibleDays++;
         }
     })

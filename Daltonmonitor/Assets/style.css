@@ -249,12 +249,15 @@ main {
 .day.off {
     display: block;
     height: 100%;
+    
+    --header-margin-bottom: .35rem;
+    
     h1 {
-        margin-bottom: 1.5rem;
+        margin-bottom: var(--header-margin-bottom);
     }
     
     .info {
-        height: calc(100% - 6rem);
+        height: calc(100% - .2rem - var(--header-margin-bottom) - 1.5 * var(--lesson-text-size) - 4 * var(--default-padding) - 4 * var(--border-size));
         text-align: center;
         padding: var(--default-padding);
         background-color: var(--off-day-color);
