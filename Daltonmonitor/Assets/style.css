@@ -178,25 +178,6 @@ main {
         border: var(--border);
         grid-row-gap: .225rem;
         
-        .floor:has(.tag + .lesson) {
-            display: grid;
-            grid-template-columns: auto auto;
-            column-gap: .25rem;
-            justify-content: start;
-            height: fit-content;
-            
-            .lesson {
-                grid-column: 2;
-                padding: var(--padding) 0;
-
-            }
-            .tag {
-                grid-column: 1;
-                height: calc(var(--lesson-text-size) + 2 * var(--border-size));
-                align-self: center;
-            }
-        }
-        
         .floor {
             display: flex;
             flex-direction: column;
@@ -243,6 +224,27 @@ main {
             }
         }
 
+    }
+}
+
+.day:has(.tag + .lesson) {
+    .floor {
+        display: grid;
+        grid-template-columns: minmax(calc(var(--longest-tag) * 1ch + var(--padding-tag) * 2), auto) auto;
+        column-gap: .25rem;
+        justify-content: start;
+        height: fit-content;
+
+        .lesson {
+            grid-column: 2;
+            padding: var(--padding) 0;
+
+        }
+        .tag {
+            grid-column: 1;
+            height: calc(var(--lesson-text-size) + 2 * var(--border-size));
+            align-self: center;
+        }
     }
 }
 
