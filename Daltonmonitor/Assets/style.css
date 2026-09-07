@@ -65,9 +65,7 @@ header {
         box-shadow: var(--shadow-major);
         align-items: center;
         
-        display: flex;
-        gap: .25rem;
-        flex-wrap: wrap;
+        text-wrap: wrap;
         font-size: 1.1rem;
     }
 }
@@ -275,4 +273,8 @@ main {
             align-self: center;
         }
     }
+}
+
+.day.hidden {
+    display: none;
 }

@@ -1,6 +1,7 @@
 
-const maxNumberOfDaysToDisplay = 2;
-
+const params = new URLSearchParams(window.location.search);
+const maxNumberOfDaysToDisplay = Number(params.get("display-days"));
+console.log(maxNumberOfDaysToDisplay)
 window.addEventListener("load", () => {
     checkVisibleDays();
     setInterval(checkVisibleDays, 1000 * 60 * 15);
@@ -14,11 +15,12 @@ function checkVisibleDays() {
     console.log(`Current date is: ${currentDateNumber}`);
     
     let countVisibleDays = 0;
+    const limitDisplayedDays = !isNaN(maxNumberOfDaysToDisplay) && maxNumberOfDaysToDisplay > 0;
     document.querySelectorAll(".day").forEach(day => {
-        if (Number(day.dataset.date) < currentDateNumber || countVisibleDays >= maxNumberOfDaysToDisplay) {
-            day.style.display = "none";
+        day.classList.remove("hidden");
+        if (Number(day.dataset.date) < currentDateNumber || (countVisibleDays >= maxNumberOfDaysToDisplay && limitDisplayedDays)) {
+            day.classList.add("hidden");
         } else {
-            day.style.display = "auto";
             countVisibleDays++;
         }
     })
