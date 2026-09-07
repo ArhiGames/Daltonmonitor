@@ -6,11 +6,13 @@ on:
       - v*
 
 jobs:
-  build-and-deploy:
+  build:
     strategy:
       matrix:
         os: [windows-latest]
     runs-on: ${{ matrix.os }}
+    permissions: 
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -44,7 +46,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: Daltonmonitor\Daltonmonitor.Desktop\bin\Release\net10.0\win-x64\publish
+          asset_path: Daltonmonitor.Desktop\bin\Release\net10.0\win-x64\publish
           asset_name: Daltonmonitor-win-x64-${{ github.ref_name }}
           asset_content_type: application/zip
         
