@@ -241,8 +241,6 @@ public class ConfigManager
             "The amount of future days that should be baked into the html"));
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MaxFutureDaysAfterOffDay, "3",
             "This config is to prevent that after long summer vacations (for example) there are still shown school days. After x free days no other day is shown anymore. Zero to ignore"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.MaxShowingDaysCount, "2",
-            "The amount of days that should be shown at max on in an environment which supports JavaScript"));
         
         ConfigEntryDatas.Add(new ConfigEntryData("Html", ConfigIdentifier.SpecialLabel, "SP", 
             "Will only be used if the dalton lesson doesn't fit any of the predefined tags. If empty the label isn't shown"));

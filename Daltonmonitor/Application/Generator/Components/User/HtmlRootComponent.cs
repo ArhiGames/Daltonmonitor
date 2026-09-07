@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using Daltonmonitor.Application.Config;
@@ -77,21 +76,8 @@ public class HtmlRootComponent : HtmlComponent
         string jsPath = ConfigManager.GetConfigValue(ConfigIdentifier.ScriptSourcePath);
         try
         {
-            string[] js = File.ReadAllLines(jsPath);
-            StringBuilder stringBuilder = new();
-            foreach (string j in js)
-            {
-                string jsString = j.Trim();
-                if (jsString.StartsWith("const maxNumberOfDaysToDisplay"))
-                {
-                    int maxShowingDaysCount =
-                        Convert.ToInt32(ConfigManager.GetConfigValue(ConfigIdentifier.MaxShowingDaysCount));
-                    stringBuilder.Append($"const maxNumberOfDaysToDisplay = {maxShowingDaysCount};");
-                    continue;
-                }
-                stringBuilder.Append($"{j}\n");
-            }
-            return stringBuilder.ToString();
+            string js = File.ReadAllText(jsPath);
+            return js;
         }
         catch
         {
