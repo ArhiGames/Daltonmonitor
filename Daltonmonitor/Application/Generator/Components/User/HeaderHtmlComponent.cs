@@ -30,7 +30,7 @@ public class HeaderHtmlComponent : HtmlComponent
 
         string dateString = $"{_generatedDate.ToLongDateString()}";
         string timeString = $"{_generatedDate.ToShortTimeString()}";
-        string lastUpdateHtml = $"<div class=\"last-update\"><div class=\"label\">Stand:</div><div class=\"date\">{dateString}</div><div class=\"time\">{timeString}</div></div>";
+        string lastUpdateHtml = $"<div class=\"last-update\">Stand: {dateString} {timeString}</div>";
         
         StringBuilder stringBuilder = new();
         stringBuilder.Append("<header>");
