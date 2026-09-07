@@ -37,7 +37,7 @@ jobs:
         with:
           type: 'zip'
           filename: release.zip
-          path: Daltonmonitor.Desktop\bin\Release\net10.0\win-x64\publish
+          directory: Daltonmonitor.Desktop\bin\Release\net10.0\win-x64\publish
         
       - name: Get Release
         id: get_release
@@ -54,7 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: release.zip
-          asset_name: Daltonmonitor-win-x64-${{ github.ref_name }}
+          asset_path: Daltonmonitor.Desktop\bin\Release\net10.0\win-x64\publish\release.zip
+          asset_name: Daltonmonitor-win-x64-${{ github.ref_name }}.zip
           asset_content_type: application/zip
         
