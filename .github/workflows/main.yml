@@ -1,0 +1,53 @@
+name: Build Daltonmonitor
+
+on:
+  push:
+    tags:
+      - v*
+
+jobs:
+  build-and-deploy:
+    strategy:
+      matrix:
+        os: [windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Setup Dotnet
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.11'
+
+      - name: Setup Dependencies
+        run: dotnet restore
+
+      - name: Build Application
+        run: dotnet publish -r win-x64 -c Release --self-contained
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }} # ref name is the tag name that triggered this action
+          release_name: Daltonmonitor Win64 ${{ github.ref_name }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload_release_asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: Daltonmonitor.Desktop\bin\Release\net10.0\win-x64\publish
+          asset_name: Daltonmonitor-win-x64-${{ github.ref_name }}
+          asset_content_type: application/zip
+        
