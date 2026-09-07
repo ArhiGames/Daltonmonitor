@@ -29,16 +29,13 @@ jobs:
       - name: Build Application
         run: dotnet publish -r win-x64 -c Release --self-contained
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+      - name: Get Release
+        id: get_release
+        uses: joutvhu/get-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ github.ref_name }} # ref name is the tag name that triggered this action
-          release_name: Daltonmonitor Win64 ${{ github.ref_name }}
-          draft: true
-          prerelease: false
 
       - name: Upload Release Asset
         id: upload_release_asset
@@ -46,7 +43,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: Daltonmonitor.Desktop\bin\Release\net10.0\win-x64\publish
           asset_name: Daltonmonitor-win-x64-${{ github.ref_name }}
           asset_content_type: application/zip

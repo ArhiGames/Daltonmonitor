@@ -187,12 +187,12 @@ public class ConfigManager
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU002, ""));
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU014, ""));
         ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.GPU018, ""));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.OutputPath, "./output.html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.ScriptSourcePath, "./script.js",
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.OutputPath, "./dalton.html"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.ScriptSourcePath, "./assets/script.js",
             "The path to the javascript file that will be baked into the generated html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.StyleSourcePath, "./style.css", 
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.StyleSourcePath, "./assets/style.css", 
             "The path to the css file that will be baked into the generated html"));
-        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.LogoSvgSourcePath, "./logo.svg",
+        ConfigEntryDatas.Add(new ConfigEntryData("Paths", ConfigIdentifier.LogoSvgSourcePath, "./assets/logo.svg",
             "The path to the svg logo file that should be displayed in the top left corner of the html website. Must be an svg"));
         
         /* Runtime */

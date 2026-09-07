@@ -1,7 +1,7 @@
+console.log("Seems like are are interested in searching trough our source code, you can do that on GitHub too ;) https://github.com/ArhiGames/Daltonmonitor ||Don't forget to star!||");
 
 const params = new URLSearchParams(window.location.search);
 const maxNumberOfDaysToDisplay = Number(params.get("display-days"));
-console.log(maxNumberOfDaysToDisplay)
 window.addEventListener("load", () => {
     checkVisibleDays();
     setInterval(checkVisibleDays, 1000 * 60 * 15);
