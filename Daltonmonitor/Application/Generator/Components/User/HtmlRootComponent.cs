@@ -52,7 +52,13 @@ public class HtmlRootComponent : HtmlComponent
     public override string GenerateHtml()
     {
         string applicationName = ConfigManager.GetConfigValue(ConfigIdentifier.ApplicationName);
-        string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta http-equiv=\"refresh\" content=\"60\" name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=\"UTF-8\"><title>{applicationName}</title></head>";
+        
+        string browserRefreshMode = ConfigManager.GetConfigValue(ConfigIdentifier.BrowserRefreshMode);
+        string browserRefreshRate = ConfigManager.GetConfigValue(ConfigIdentifier.BrowserRefreshRate);
+        string browserMetaRefreshContent = browserMetaContent == "META" ? 
+            $"<meta http-equiv=\"refresh\" content=\"{browserRefreshRate}\">" : "";
+
+        string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=\"UTF-8\">{browserMetaRefreshContent}<title>{applicationName}</title></head>";
         string htmlStyle = $"<style>{GetCssString()}</style>";
         string htmlScript = $"<script>{GetJsString()}</script>";
         const string htmlBack = "</body></html>";

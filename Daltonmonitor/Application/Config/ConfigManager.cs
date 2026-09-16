@@ -198,6 +198,10 @@ public class ConfigManager
         /* Runtime */
         ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.CheckInterval, "30", 
             "check interval in seconds"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.BrowserRefreshMode, "META",
+            "META: refreshes using the html meta tag. JS: The JavaScript manages the automatic refresh. NOREFRESH: No automatic refresh"));
+        ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.BrowserRefreshRate, "60",
+            "How often should the browser refresh the html? (in miliseconds)"))
         ConfigEntryDatas.Add(new ConfigEntryData("Runtime", ConfigIdentifier.UserMode, "KEEP", 
             "DEL: deletes GPU files after usage. KEEP: keeps GPU files after usage"));
         

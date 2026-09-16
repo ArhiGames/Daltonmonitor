@@ -15,6 +15,8 @@ public enum ConfigIdentifier
     LogoSvgSourcePath,
     
     CheckInterval,
+    BrowserRefreshMode,
+    BrowserRefreshRate,
     UserMode,
     
     ApplicationName,
