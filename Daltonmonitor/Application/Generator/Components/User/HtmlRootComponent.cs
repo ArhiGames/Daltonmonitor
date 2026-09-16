@@ -55,7 +55,7 @@ public class HtmlRootComponent : HtmlComponent
         
         string browserRefreshMode = ConfigManager.GetConfigValue(ConfigIdentifier.BrowserRefreshMode);
         string browserRefreshRate = ConfigManager.GetConfigValue(ConfigIdentifier.BrowserRefreshRate);
-        string browserMetaRefreshContent = browserMetaContent == "META" ? 
+        string browserMetaRefreshContent = browserRefreshMode == "META" ? 
             $"<meta http-equiv=\"refresh\" content=\"{browserRefreshRate}\">" : "";
 
         string htmlHead = $"<!DOCTYPE html><html lang=\"de\"><head><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" charset=\"UTF-8\">{browserMetaRefreshContent}<title>{applicationName}</title></head>";
