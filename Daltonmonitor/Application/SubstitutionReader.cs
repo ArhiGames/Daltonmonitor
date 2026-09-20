@@ -17,13 +17,84 @@ public class SubstitutionReader(ConfigManager configManager)
 {
     private Timetable? Timetable { get; set; }
 
+    private DateTime? LastGPU001WriteTime { get; set; }
+    private DateTime? LastGPU002WriteTime { get; set; }
+    private DateTime? LastGPU014WriteTime { get; set; }
+    private DateTime? LastGPU018WriteTime { get; set; }
+
     private char CsvSplitCharacter { get; set; } = '\0';
     private string[] DaltonIdentifiers { get; set; } = [];
     private string[] WorkshopIdentifiers { get; set; } = [];
     private string[] MentorIdentifiers { get; set; } = [];
 
+    private static bool HasGPUFileChanged(string path, DateTime? cachedDateTime, out DateTime? newDateTime)
+    {
+        try
+        {
+            bool fileExists = File.Exists(path);
+            DateTime? lastWriteTimeUtc = fileExists ? File.GetLastWriteTimeUtc(path) : null;
+
+            switch (fileExists)
+            {
+                case true when cachedDateTime is null:
+                    newDateTime = lastWriteTimeUtc;
+                    return true;
+                case false when cachedDateTime is not null:
+                    newDateTime = null;
+                    return true;
+            }
+
+            newDateTime = lastWriteTimeUtc;
+            return cachedDateTime != lastWriteTimeUtc;
+        }
+        catch
+        {
+            // ignored
+        }
+
+        newDateTime = null;
+        return false;
+    }
+
+    private bool HasDataFilesChanged()
+    {
+        if (configManager.IsConfigRefreshed())
+        {
+            return true;
+        }
+        
+        string gpu001Path = configManager.GetConfigValue(ConfigIdentifier.GPU001);
+        string gpu002Path = configManager.GetConfigValue(ConfigIdentifier.GPU002);
+        string gpu014Path = configManager.GetConfigValue(ConfigIdentifier.GPU014);
+        string gpu018Path = configManager.GetConfigValue(ConfigIdentifier.GPU018);
+
+        bool hasChanged = HasGPUFileChanged(gpu001Path, LastGPU001WriteTime, out DateTime? lastGPU001WriteTimeUtc);
+        if (lastGPU001WriteTimeUtc is not null)
+        {
+            LastGPU001WriteTime = lastGPU001WriteTimeUtc.Value;
+        }
+        
+        {
+            hasChanged |= HasGPUFileChanged(gpu002Path, LastGPU002WriteTime, out DateTime? lastWriteTimeUtc);
+            LastGPU002WriteTime = lastWriteTimeUtc;
+            
+            hasChanged |= HasGPUFileChanged(gpu014Path, LastGPU014WriteTime, out lastWriteTimeUtc);
+            LastGPU014WriteTime = lastWriteTimeUtc;
+            
+            hasChanged |= HasGPUFileChanged(gpu018Path, LastGPU018WriteTime, out lastWriteTimeUtc);
+            LastGPU018WriteTime = lastWriteTimeUtc;
+        }
+        
+        return hasChanged;
+    }
+    
     public Result<Timetable> Process()
     {
+        if (!HasDataFilesChanged())
+        {
+            return Errors.NoNeedToRefresh;
+        }
+        
         string csvSplitString = configManager.GetConfigValue(ConfigIdentifier.GpuSplitCharacter);
         if (csvSplitString.Length < 1)
         {
@@ -157,7 +228,7 @@ public class SubstitutionReader(ConfigManager configManager)
         return Result.Success();
     }
 
-    private Result ReadSubstitutionData()
+    private void ReadSubstitutionData()
     {
         string gpu014Path = configManager.GetConfigValue(ConfigIdentifier.GPU014);
 
@@ -168,7 +239,7 @@ public class SubstitutionReader(ConfigManager configManager)
         }
         catch
         {
-            return Errors.FileError;
+            return;
         }
         
         foreach (string line in lines)
@@ -212,11 +283,9 @@ public class SubstitutionReader(ConfigManager configManager)
                                                                       tld.Lesson == lesson);
             timetableLessonData?.AddSubstitutionData(substitutionData);
         }
-
-        return Result.Success();
     }
 
-    private Result ReadVacationData()
+    private void ReadVacationData()
     {
         string gpu018Path = configManager.GetConfigValue(ConfigIdentifier.GPU018);
 
@@ -227,7 +296,7 @@ public class SubstitutionReader(ConfigManager configManager)
         }
         catch
         {
-            return Errors.FileError;
+            return;
         }
 
         foreach (string line in lines)
@@ -244,8 +313,6 @@ public class SubstitutionReader(ConfigManager configManager)
                 isOffDay);
             Timetable!.AddVacationData(vacationData);
         }
-
-        return Result.Success();
     }
 
     private DaltonType GetDaltonType(string identifier)

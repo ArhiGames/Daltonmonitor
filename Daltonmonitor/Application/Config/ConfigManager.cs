@@ -10,12 +10,43 @@ namespace Daltonmonitor.Application.Config;
 public class ConfigManager
 {
     private const string ConfigPath = "./config1.ini";
+    
+    private DateTime LastConfigWrite { get; set; }
+    
     private List<ConfigEntryData> ConfigEntryDatas { get; } = [];
 
     public ConfigManager()
     {
         Setup();
         InitializeConfigData();
+    }
+
+    public bool IsConfigRefreshed()
+    {
+        try
+        {
+            if (File.Exists(ConfigPath))
+            {
+                DateTime lastWriteDateTime = File.GetLastWriteTimeUtc(ConfigPath);
+                if (lastWriteDateTime != LastConfigWrite)
+                {
+                    LastConfigWrite = lastWriteDateTime;
+                    return true;
+                }
+            }
+            else
+            {
+                Setup();
+                InitializeConfigData();
+                return true;
+            }
+        }
+        catch
+        {
+            // ignored
+        }
+
+        return false;
     }
 
     public string[] GetConfigListValue(ConfigIdentifier configIdentifier)
@@ -47,6 +78,8 @@ public class ConfigManager
             {
                 UpdateConfig([]);
             }
+
+            LastConfigWrite = File.GetLastWriteTimeUtc(ConfigPath);
         }
         catch
         {
