@@ -116,14 +116,9 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         string removedString = _isCancelled ? "removed" : "";
         string htmlHead = $"<div class=\"lesson {removedString}\">";
         const string htmlBack = "</div>";
-        
-        bool enableInlineTags = _configManager.GetConfigValue(ConfigIdentifier.EnableInlineTags) == "true";
-        LabelHtmlComponent? labelHtmlComponent = GetLabelHtmlComponent(_relevantDaltonType);
 
         StringBuilder stringBuilder = new();
-        if (!enableInlineTags && labelHtmlComponent is not null) stringBuilder.Append(labelHtmlComponent.GenerateHtml());
         stringBuilder.Append(htmlHead); 
-        if (enableInlineTags && labelHtmlComponent is not null) stringBuilder.Append(labelHtmlComponent.GenerateHtml());
         
         foreach (HtmlComponent htmlComponent in Children)
         {
