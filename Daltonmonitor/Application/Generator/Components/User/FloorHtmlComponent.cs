@@ -24,7 +24,7 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
             .ThenBy(tld => tld.Rooms[0].RoomId)
             .ToList();
 
-        bool extraColumnForTags = !configManager.GetConfigValue(ConfigIdentifier.EnableInlineTags) == "true";
+        bool extraColumnForTags = !_configManager.GetConfigValue(ConfigIdentifier.EnableInlineTags) == "true";
         
         foreach (TimetableLessonData timetableLessonData in orderedLessons)
         {
