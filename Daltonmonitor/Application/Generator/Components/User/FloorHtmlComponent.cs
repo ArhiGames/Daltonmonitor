@@ -10,10 +10,12 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, int floor) : HtmlComponent
 {
+    private ConfigManager _configManager;
+
     protected override void Initialize()
     {
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
-        ConfigManager configManager = htmlRootComponent.ConfigManager;
+        _configManager = htmlRootComponent.ConfigManager;
         
         // todo consider overriding dalton types too
         List<TimetableLessonData> orderedLessons = timetableLessonDatas
