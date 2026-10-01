@@ -10,7 +10,7 @@ namespace Daltonmonitor.Application.Generator.Components.User;
 
 public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, int floor) : HtmlComponent
 {
-    private ConfigManager _configManager;
+    private ConfigManager? _configManager = null;
 
     protected override void Initialize()
     {
