@@ -132,29 +132,4 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         stringBuilder.Append(htmlBack);
         return stringBuilder.ToString();
     }
-
-    private LabelHtmlComponent? GetLabelHtmlComponent(DaltonType daltonType)
-    {
-        ConfigIdentifier configIdentifier = daltonType switch
-        {
-            DaltonType.None or DaltonType.Dalton => ConfigIdentifier.None,
-            DaltonType.Workshop => ConfigIdentifier.WorkshopLabel,
-            DaltonType.Mentor => ConfigIdentifier.MentorLabel,
-            DaltonType.Bound => ConfigIdentifier.BoundDaltonLabel,
-            _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
-        };
-        if (configIdentifier == ConfigIdentifier.None)
-        {
-            return null;
-        }
-
-        string labelString = _configManager.GetConfigValue(configIdentifier);
-        if (labelString == string.Empty)
-        {
-            return null;
-        }
-
-        LabelHtmlComponent labelHtmlComponent = new(labelString);
-        return labelHtmlComponent;
-    }
 }

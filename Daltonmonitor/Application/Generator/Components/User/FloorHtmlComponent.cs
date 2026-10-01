@@ -13,6 +13,7 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
     protected override void Initialize()
     {
         HtmlRootComponent htmlRootComponent = GetOuter<HtmlRootComponent>()!;
+        ConfigManager configManager = htmlRootComponent.ConfigManager;
         
         // todo consider overriding dalton types too
         List<TimetableLessonData> orderedLessons = timetableLessonDatas
@@ -20,9 +21,23 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
                             ShouldReordererDaltonLesson(htmlRootComponent.ConfigManager, tld.DaltonType))
             .ThenBy(tld => tld.Rooms[0].RoomId)
             .ToList();
+
+        bool extraColumnForTags = !configManager.GetConfigValue(ConfigIdentifier.EnableInlineTags) == "true";
         
         foreach (TimetableLessonData timetableLessonData in orderedLessons)
         {
+            if (extraColumnForTags)
+            {
+                if (timetableLessonData.DaltonType != DaltonType.None)
+                {
+                    LabelHtmlComponent? labelHtmlComponent = GetLabelHtmlComponent(timetableLessonData.DaltonType);
+                    if (labelHtmlComponent is not null)
+                    {
+                        AddChildToComponent(labelHtmlComponent);
+                    }
+                }
+            }
+
             LessonHtmlComponent lessonHtmlComponent = new(timetableLessonData);
             AddChildToComponent(lessonHtmlComponent);
         }
@@ -69,5 +84,30 @@ public class FloorHtmlComponent(List<TimetableLessonData> timetableLessonDatas, 
             DaltonType.Bound => configManager.GetConfigValue(ConfigIdentifier.ReorderBoundDaltonWithLabelToBottom) == "true",
             _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
         };
+    }
+
+    private LabelHtmlComponent? GetLabelHtmlComponent(DaltonType daltonType)
+    {
+        ConfigIdentifier configIdentifier = daltonType switch
+        {
+            DaltonType.None or DaltonType.Dalton => ConfigIdentifier.None,
+            DaltonType.Workshop => ConfigIdentifier.WorkshopLabel,
+            DaltonType.Mentor => ConfigIdentifier.MentorLabel,
+            DaltonType.Bound => ConfigIdentifier.BoundDaltonLabel,
+            _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
+        };
+        if (configIdentifier == ConfigIdentifier.None)
+        {
+            return null;
+        }
+
+        string labelString = _configManager.GetConfigValue(configIdentifier);
+        if (labelString == string.Empty)
+        {
+            return null;
+        }
+
+        LabelHtmlComponent labelHtmlComponent = new(labelString);
+        return labelHtmlComponent;
     }
 }
