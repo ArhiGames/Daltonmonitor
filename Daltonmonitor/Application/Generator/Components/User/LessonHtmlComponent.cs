@@ -113,12 +113,23 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
     
     public override string GenerateHtml()
     {
+        bool extraColumnForTags = _configManager.GetConfigValue(ConfigIdentifier.EnableInlineTags) != "true";
+        LabelHtmlComponent? labelHtmlComponent = GetLabelHtmlComponent(_relevantDaltonType);
+        
         string removedString = _isCancelled ? "removed" : "";
         string htmlHead = $"<div class=\"lesson {removedString}\">";
         const string htmlBack = "</div>";
 
         StringBuilder stringBuilder = new();
-        stringBuilder.Append(htmlHead); 
+        if (extraColumnForTags && labelHtmlComponent is not null)
+        {
+            stringBuilder.Append(labelHtmlComponent.GenerateHtml());
+        }
+        stringBuilder.Append(htmlHead);
+        if (!extraColumnForTags && labelHtmlComponent is not null)
+        {
+            stringBuilder.Append(labelHtmlComponent.GenerateHtml());
+        }
         
         foreach (HtmlComponent htmlComponent in Children)
         {
@@ -126,5 +137,30 @@ public class LessonHtmlComponent(TimetableLessonData timetableLessonData) : Html
         }
         stringBuilder.Append(htmlBack);
         return stringBuilder.ToString();
+    }
+    
+    private LabelHtmlComponent? GetLabelHtmlComponent(DaltonType daltonType)
+    {
+        ConfigIdentifier configIdentifier = daltonType switch
+        {
+            DaltonType.None or DaltonType.Dalton => ConfigIdentifier.None,
+            DaltonType.Workshop => ConfigIdentifier.WorkshopLabel,
+            DaltonType.Mentor => ConfigIdentifier.MentorLabel,
+            DaltonType.Bound => ConfigIdentifier.BoundDaltonLabel,
+            _ => throw new ArgumentOutOfRangeException(nameof(daltonType), daltonType, null)
+        };
+        if (configIdentifier == ConfigIdentifier.None)
+        {
+            return null;
+        }
+
+        string? labelString = _configManager.GetConfigValue(configIdentifier);
+        if (string.IsNullOrEmpty(labelString))
+        {
+            return null;
+        }
+
+        LabelHtmlComponent labelHtmlComponent = new(labelString);
+        return labelHtmlComponent;
     }
 }
