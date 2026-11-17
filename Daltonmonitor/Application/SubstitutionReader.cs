@@ -266,6 +266,7 @@ public class SubstitutionReader(ConfigManager configManager)
             DateTime dateTime = DateTime.ParseExact(lineContents[1], "yyyyMMdd", CultureInfo.InvariantCulture);
             int lesson = Convert.ToInt32(lineContents[2]);
             int lessonId = Convert.ToInt32(lineContents[4]);
+            Teacher absentTeacher = new(lineContents[5]);
             Teacher substituteTeacher = new(lineContents[6]);
 
             string[] roomsIdentifiers = lineContents[12].CsvSplit('~');
@@ -280,7 +281,8 @@ public class SubstitutionReader(ConfigManager configManager)
             TimetableLessonData? timetableLessonData =
                 Timetable!.TimetableLessonDatas.FirstOrDefault(tld => tld.LessonId == lessonId &&
                                                                       tld.Day == dateTime.DayOfWeek &&
-                                                                      tld.Lesson == lesson);
+                                                                      tld.Lesson == lesson &&
+                                                                      tld.Teachers.Contains(absentTeacher));
             timetableLessonData?.AddSubstitutionData(substitutionData);
         }
     }
@@ -368,9 +370,11 @@ public class SubstitutionReader(ConfigManager configManager)
             }
 
             List<TimetableLessonData> timetableLessonDatas =
-                Timetable!.TimetableLessonDatas.Where(tld => tld.LessonId == lessonId && 
-                                                             tld.Teachers.Contains(teacher) && 
-                                                             tld.Rooms.Contains(room)).ToList();
+            [
+                ..Timetable!.TimetableLessonDatas.Where(tld => tld.LessonId == lessonId &&
+                                                                tld.Teachers.Contains(teacher) &&
+                                                                tld.Rooms.Contains(room))
+            ];
             foreach (TimetableLessonData timetableLessonData in timetableLessonDatas)
             {
                 timetableLessonData.VariantIdentifier = variantIdentifier;

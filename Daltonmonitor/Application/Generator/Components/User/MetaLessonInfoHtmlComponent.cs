@@ -19,7 +19,7 @@ public class MetaLessonInfoHtmlComponent(MetadataType metadataType, string metad
         string metadataString = metadataType switch
         {
             MetadataType.NotSpecified => metadata,
-            MetadataType.Information => metadata,
+            MetadataType.Information => $"({metadata})",
             MetadataType.Mentor => $"({metadata})",
             _ => throw new ArgumentOutOfRangeException(nameof(metadataType), metadataType, null)
         };
